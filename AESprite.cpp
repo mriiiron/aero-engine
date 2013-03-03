@@ -1,16 +1,18 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
+#include <string>
 #include <GL\glut.h>
 #include <math.h>
 #include "AEUtility.h"
 #include "AEResource.h"
-#include "AEObject.h"
 #include "AEKeyboard.h"
 #include "AEBackground.h"
 #include "AEParticleSystem.h"
-#include "AEScene.h"
 #include "AEPhysics.h"
+#include "AECollision.h"
+#include "AEObject.h"
+#include "AEScene.h"
 #include "AESprite.h"
 
 extern AEResourceTable rTable;
@@ -31,44 +33,44 @@ AESprite::AESprite(AEScene* scene, GLint _oid, GLint _team, GLfloat _cx, GLfloat
 	changeAction(_action);
 }
 
-AEPoint AESprite::calcRotatedPoint(GLfloat cx, GLfloat cy, Frame f, GLint angleDeg, GLbyte facing) {
+AEPoint AESprite::calcRotatedPoint(GLfloat cx, GLfloat cy, Frame* f, GLint angleDeg, GLbyte facing) {
 	GLfloat angle = angleDeg * 3.14159 / 180.0;
 	GLfloat cosA = cos(angle), sinA = sin(angle);
 	AEPoint point;
 	if (facing == FACING_RIGHT) {
-		point.x = cx + (f.cast->x - f.centerx) * cosA - (f.cast->y - f.centery) * sinA;
-		point.y = cy + (f.cast->x - f.centerx) * sinA + (f.cast->y - f.centery) * cosA;
+		point.x = cx + (f->cast->x - f->centerx) * cosA - (f->cast->y - f->centery) * sinA;
+		point.y = cy + (f->cast->x - f->centerx) * sinA + (f->cast->y - f->centery) * cosA;
 	}
 	else {
-		point.x = cx - (f.cast->x - f.centerx) * cosA + (f.cast->y - f.centery) * sinA;
-		point.y = cy + (f.cast->x - f.centerx) * sinA + (f.cast->y - f.centery) * cosA;
+		point.x = cx - (f->cast->x - f->centerx) * cosA + (f->cast->y - f->centery) * sinA;
+		point.y = cy + (f->cast->x - f->centerx) * sinA + (f->cast->y - f->centery) * cosA;
 	}
 	return point;
 }
 
-AEBiasRect AESprite::calcRotatedRect(GLfloat cx, GLfloat cy, Frame f, GLint angleDeg, GLbyte facing) {
+AEBiasRect AESprite::calcRotatedRect(GLfloat cx, GLfloat cy, Frame* f, GLint angleDeg, GLbyte facing) {
 	GLfloat angle = angleDeg * 3.14159 / 180.0;
 	GLfloat cosA = cos(angle), sinA = sin(angle);
 	AEBiasRect bRect;
 	if (facing == FACING_RIGHT) {
-		bRect.x1 = cx - f.centerx * cosA + f.centery * sinA;
-		bRect.y1 = cy - f.centerx * sinA - f.centery * cosA;
-		bRect.x2 = bRect.x1 + f.width * cosA;
-		bRect.y2 = bRect.y1 + f.width * sinA;
-		bRect.x3 = bRect.x2 - f.height * sinA;
-		bRect.y3 = bRect.y2 + f.height * cosA;
-		bRect.x4 = bRect.x1 - f.height * sinA;
-		bRect.y4 = bRect.y1 + f.height * cosA;
+		bRect.x1 = cx - f->centerx * cosA + f->centery * sinA;
+		bRect.y1 = cy - f->centerx * sinA - f->centery * cosA;
+		bRect.x2 = bRect.x1 + f->width * cosA;
+		bRect.y2 = bRect.y1 + f->width * sinA;
+		bRect.x3 = bRect.x2 - f->height * sinA;
+		bRect.y3 = bRect.y2 + f->height * cosA;
+		bRect.x4 = bRect.x1 - f->height * sinA;
+		bRect.y4 = bRect.y1 + f->height * cosA;
 	}
 	else {
-		bRect.x2 = cx + f.centerx * cosA - f.centery * sinA;
-		bRect.y2 = cy - f.centerx * sinA - f.centery * cosA;
-		bRect.x1 = bRect.x2 - f.width * cosA;
-		bRect.y1 = bRect.y2 + f.width * sinA;
-		bRect.x3 = bRect.x2 + f.height * sinA;
-		bRect.y3 = bRect.y2 + f.height * cosA;
-		bRect.x4 = bRect.x1 + f.height * sinA;
-		bRect.y4 = bRect.y1 + f.height * cosA;
+		bRect.x2 = cx + f->centerx * cosA - f->centery * sinA;
+		bRect.y2 = cy - f->centerx * sinA - f->centery * cosA;
+		bRect.x1 = bRect.x2 - f->width * cosA;
+		bRect.y1 = bRect.y2 + f->width * sinA;
+		bRect.x3 = bRect.x2 + f->height * sinA;
+		bRect.y3 = bRect.y2 + f->height * cosA;
+		bRect.x4 = bRect.x1 + f->height * sinA;
+		bRect.y4 = bRect.y1 + f->height * cosA;
 	}
 	return bRect;
 }
@@ -102,9 +104,9 @@ GLvoid AESprite::changeAction(GLint _action) {
 		Frame f = anim.getFrame(frame);
 		AEPoint castPoint = calcRotatedPoint(cx, cy, f, angle, facing);
 		if (facing == 0)
-			sTable.add(new AESprite(f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
+			sTable.add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
 		else
-			sTable.add(new AESprite(f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
+			sTable.add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
 	}
 }
 
@@ -302,7 +304,7 @@ GLvoid AESprite::testKeyState() {
 }
 
 GLvoid AESprite::update() {
-	Background* bg = bTable.getActiveBG();
+	AEBackground* bg = scene->getBackground();
 	for (int i = 0; i < AEKeyboardHandler::INPUT_COUNT; i++) {
 		if (inputState[i] > 0)
 			inputState[i]--;
@@ -481,9 +483,9 @@ GLvoid AESprite::update() {
 				Frame f = anim.getFrame(frame);
 				AEPoint castPoint = calcRotatedPoint(cx, cy, f, angle, facing);
 				if (facing == 0)
-					sTable.add(new AESprite(f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
+					sTable.add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
 				else
-					sTable.add(new AESprite(f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
+					sTable.add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
 			}
 		}
 	}
@@ -591,180 +593,7 @@ GLvoid AESpriteTable::clear() {
 	}
 }
 
-GLvoid AESpriteTable::singleCollision(AESprite* s1, AESprite* s2, Frame f1, Frame f2, AEPoint sparkPos, AEPoint bloodPos) {
-	printf("Collision: Sprite %d got collided by Sprite %d .. ", s2->getIndex(), s1->getIndex());
-	switch (s1->getState()) {
-	case 1000:
-		s1->changeAction(AEObject::ACT_PROJ_HIT);
-		break;
-	default:
-		break;
-	}
-	if (f2.block != NULL) {
-		if (f1.attack->type == 99) {
-			if (f2.block->type == 99) {
-				printf("Clash!\n");
-				sTable.add(new AESprite(OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_SPECIAL));
-				s1->changeAction(f1.attack->blownOffTo);
-				s2->changeAction(f2.block->breakTo);
-				s1->stiffen(4);
-				s2->stiffen(4);
-				if (s1->getState() >= AEObject::STATE_CHAR_INAIR)
-					s1->setVx(-f1.attack->force / 2.0);
-				else
-					s1->setGroundSpeed(-f1.attack->force / 2.0);
-				if (s2->getState() >= AEObject::STATE_CHAR_INAIR)
-					s2->setVx(-f1.attack->force / 2.0);
-				else
-					s2->setGroundSpeed(-f1.attack->force / 2.0);
-			}
-			else {
-				printf("Blocked, but cannot force back!\n");
-				sTable.add(new AESprite(OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_BLOCK));
-				s2->changeAction(f2.block->blockTo);
-				s1->stiffen(3);
-				s2->stiffen(3);
-				if (s2->getState() >= AEObject::STATE_CHAR_INAIR)
-					s2->setVx(-f1.attack->force);
-				else
-					s2->setGroundSpeed(-f1.attack->force);
-			}
-		}
-		else if (f2.block->type == 99) {
-			printf("Blown off!\n");
-			sTable.add(new AESprite(OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_SPECIAL));
-			s1->changeAction(f1.attack->blownOffTo);
-			s1->stiffen(5);
-			s2->stiffen(2);
-			if (s1->getState() >= STATE_CHAR_INAIR)
-				s1->setVx(-f1.attack->force / 2.0);
-			else
-				s1->setGroundSpeed(-f1.attack->force / 2.0);
-		}
-		else if (f1.attack->type == 0 || f2.block->type == 0 || f1.attack->type == f2.block->type) {
-			printf("Blocked.\n");
-			sTable.add(new AESprite(OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_BLOCK));
-			s1->changeAction(f1.attack->blockedTo);
-			s2->changeAction(f2.block->blockTo);
-			s2->takeDamage(f1.attack->damage / 10);
-			s2->stiffen(3);
-			if (s1->getState() >= AEObject::STATE_CHAR_INAIR)
-				s1->setVx(-f1.attack->force / 2.0);
-			else
-				s1->setGroundSpeed(-f1.attack->force / 2.0);
-			if (s2->getState() >= AEObject::STATE_CHAR_INAIR)
-				s2->setVx(-f1.attack->force / 1.5);
-			else
-				s2->setGroundSpeed(-f1.attack->force / 1.5);
-		}
-		else {
-			printf("Hit! Guard failed.\n");
-			GLint sparkType;
-			switch (f1.attack->effect) {
-			case 1:
-				sparkType = SPARK_SLASH_HEAVY;
-				break;
-			default:
-				sparkType = SPARK_HIT;
-				break;
-			}
-			AESprite* spark = new AESprite(OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, sparkType);
-			spark->setAngle(f1.attack->angle);
-			spark->setFacing(s1->getFacing());
-			sTable.add(spark);
-			s2->changeAction(AEObject::ACT_CHAR_GET_HIT);
-			s2->takeDamage(f1.attack->damage);
-			if (s2->getHP() <= 0) {
-				sTable.add(new AESprite(OBJECT_SPARK, AESprite::TEAM_NONE, bloodPos.x, bloodPos.y, BLOOD_CRITICAL));
-			}
-			s1->stiffen(4);
-			s2->stiffen(4);
-			if (f1.attack->force >= 10) {
-				if (f1.attack->angle > 75) {
-					s2->changeAction(AEObject::ACT_CHAR_FALL_90);
-				}
-				else if (f1.attack->angle > 45) {
-					s2->changeAction(AEObject::ACT_CHAR_FALL_60);
-				}
-				else if (f1.attack->angle > 15) {
-					s2->changeAction(AEObject::ACT_CHAR_FALL_30);
-				}
-				else if (f1.attack->angle > -15) {
-					s2->changeAction(AEObject::ACT_CHAR_FALL_0);
-				}
-				else {
-					s2->changeAction(AEObject::ACT_CHAR_FALL_DROP);
-				}
-				s2->setGroundSpeed(0.0);
-				s2->setAx(0.0);
-				s2->setVx(-f1.attack->force * cos(f1.attack->angle * 3.14159 / 180));
-				s2->setVy(f1.attack->force * sin(f1.attack->angle * 3.14159 / 180));
-			}
-			else {
-				s2->changeAction(AEObject::ACT_CHAR_GET_HIT);
-				if (s2->getState() >= AEObject::STATE_CHAR_INAIR)
-					s2->setVx(-f1.attack->force);
-				else
-					s2->setGroundSpeed(-f1.attack->force);
-			}
-		}
-	}
-	else {
-		printf("Hit.\n");
-		GLint sparkType;
-		switch (f1.attack->effect) {
-		case 1:
-			sparkType = SPARK_SLASH_HEAVY;
-			break;
-		default:
-			sparkType = SPARK_HIT;
-			break;
-		}
-		AESprite* spark = new AESprite(OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, sparkType);
-		spark->setAngle(f1.attack->angle);
-		spark->setFacing(s1->getFacing());
-		sTable.add(spark);
-		s2->takeDamage(f1.attack->damage);
-		s1->stiffen(4);
-		s2->stiffen(4);
-		if (f1.attack->force >= 10) {
-			if (f1.attack->angle > 75) {
-				s2->changeAction(AEObject::ACT_CHAR_FALL_90);
-			}
-			else if (f1.attack->angle > 45) {
-				s2->changeAction(AEObject::ACT_CHAR_FALL_60);
-			}
-			else if (f1.attack->angle > 15) {
-				s2->changeAction(AEObject::ACT_CHAR_FALL_30);
-			}
-			else if (f1.attack->angle > -15) {
-				s2->changeAction(AEObject::ACT_CHAR_FALL_0);
-			}
-			else {
-				s2->changeAction(AEObject::ACT_CHAR_FALL_DROP);
-			}
-			s2->setGroundSpeed(0.0);
-			s2->setAx(0.0);
-			s2->setVx(-f1.attack->force * cos(f1.attack->angle * 3.14159 / 180));
-			s2->setVy(f1.attack->force * sin(f1.attack->angle * 3.14159 / 180));
-		}
-		else {
-			s2->changeAction(AEObject::ACT_CHAR_GET_HIT);
-			if (s2->getState() >= AEObject::STATE_CHAR_INAIR)
-				s2->setVx(-f1.attack->force);
-			else
-				s2->setGroundSpeed(-f1.attack->force);
-		}
-	}
-	if (s2->getHP() <= 0) {
-		sTable.add(new AESprite(OBJECT_SPARK, AESprite::TEAM_NONE, bloodPos.x, bloodPos.y, BLOOD_CRITICAL));
-		printf("KO.\n");
-		s2->changeAction(AEObject::ACT_CHAR_DEAD);
-	}
-	s1->lockAtkJudge();
-}
-
-GLvoid AESpriteTable::dealWithCollisions() {
+GLvoid AESpriteTable::handleCollisions() {
 	for (GLint i = 0; i < pHash - 1; i++) {
 		AESprite* s1 = table[hash[i]];
 		Frame f1 = oTable.get(s1->getOid())->getAnim(s1->getAction()).getFrame(s1->getFrame());
@@ -775,8 +604,8 @@ GLvoid AESpriteTable::dealWithCollisions() {
 				if (s1->getTeam() == s2->getTeam())
 					continue;
 				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction()).getFrame(s2->getFrame());
-				if (f2.body != NULL && isCollided(s1, s2, f1, f2, &sparkPos, &bloodPos)) {
-					singleCollision(s1, s2, f1, f2, sparkPos, bloodPos);
+				if (f2.body != NULL && AECollision::check(s1, s2, f1, f2, &sparkPos, &bloodPos)) {
+					AECollision::handle(s1, s2, f1, f2, sparkPos, bloodPos);
 				}
 			}
 		}
@@ -786,8 +615,8 @@ GLvoid AESpriteTable::dealWithCollisions() {
 				if (s2->isAtkJudgeLocked() || s1->getTeam() == s2->getTeam())
 					continue;
 				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction()).getFrame(s2->getFrame());
-				if (f2.attack != NULL && isCollided(s2, s1, f2, f1, &sparkPos, &bloodPos)) {
-					singleCollision(s2, s1, f2, f1, sparkPos, bloodPos);
+				if (f2.attack != NULL && AECollision::check(s2, s1, f2, f1, &sparkPos, &bloodPos)) {
+					AECollision::handle(s2, s1, f2, f1, sparkPos, bloodPos);
 				}
 			}
 		}
@@ -799,7 +628,7 @@ GLvoid AESpriteTable::update() {
 		if (occupied[i])
 			table[i]->update();
 	}
-	dealWithCollisions();
+	handleCollisions();
 }
 
 GLvoid AESpriteTable::paint() {

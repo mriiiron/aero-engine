@@ -13,6 +13,9 @@ the game is running.
 #pragma once
 
 
+class AEScene;
+
+
 class AESprite {
 
 public:
@@ -61,8 +64,8 @@ public:
 	GLfloat getVy() { return vy; }
 	GLbyte inputStateJudge(GLint _input);
 	GLint log2(GLint key);
-	AEPoint calcRotatedPoint(GLfloat cx, GLfloat cy, Frame f, GLint angleDeg, GLbyte facing);
-	AEBiasRect calcRotatedRect(GLfloat cx, GLfloat cy, Frame f, GLint angleDeg, GLbyte facing);
+	AEPoint calcRotatedPoint(GLfloat cx, GLfloat cy, Frame* f, GLint angleDeg, GLbyte facing);
+	AEBiasRect calcRotatedRect(GLfloat cx, GLfloat cy, Frame* f, GLint angleDeg, GLbyte facing);
 	/* CHARACTER ONLY */
 	GLint getKeyState() { return keyState; }
 	GLint getHP() { return hpValue; }
@@ -124,8 +127,7 @@ public:
 	GLvoid addAt(GLint index, AESprite* sp);
 	GLvoid remove(GLint index);
 	GLvoid clear();
-	GLvoid singleCollision(AESprite* s1, AESprite* s2, Frame f1, Frame f2, AEPoint sparkPos, AEPoint bloodPos);
-	GLvoid dealWithCollisions();
+	GLvoid handleCollisions();
 	GLvoid update();
 	GLvoid paint();
 

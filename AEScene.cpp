@@ -1,21 +1,19 @@
 #include <GL\glut.h>
+#include "AESystemParam.h"
 #include "AEUtility.h"
-#include "AECamera.h"
-#include "AEBackground.h"
 #include "AEHud.h"
+#include "AEBackground.h"
 #include "AESprite.h"
-#include "AEAI.h"
+#include "AECamera.h"
 #include "AEScene.h"
 
+extern AECamera camera;
 
 AEScene::AEScene() {
-	camera = NULL;
 	bg = NULL;
 	sTable = NULL;
-	aTable = NULL;
 	hud = NULL;
 }
-
 
 GLvoid AEScene::run() {
 	
@@ -32,12 +30,17 @@ GLvoid AEScene::update() {
 	sTable->update();
 	hud->update();
 	bg->update();
-	camera->update();
+	//camera->update();
+	//AESysParam::aiTimer--;
+	//if (AESysParam::aiTimer == 0) {
+	//	aTable->update();
+	//	AESysParam::aiTimer = AEAI::EXEC_INTERVAL;
+	//}
 }
 
 GLvoid AEScene::paint() {
 	if (bg != NULL) {
-		bg->paint(camera->getCrosshair());
+		bg->paint(camera.getCrosshair());
 	}
 	if (sTable != NULL) {
 		sTable->paint();

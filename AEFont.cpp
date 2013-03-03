@@ -7,8 +7,8 @@
 #include "AEUtility.h"
 #include "AEFont.h"
 
-Rect AEFont::getTexCoords(GLint imgOffset) {
-	Rect rect;
+AERect AEFont::getTexCoords(GLint imgOffset) {
+	AERect rect;
 	rect.x1 = 0.05 * (imgOffset % 20);
 	rect.x2 = rect.x1 + 0.05;
 	rect.y2 = 1.0 - 0.1 * (imgOffset / 20);
@@ -20,7 +20,7 @@ GLvoid AEFont::build() {
 	listBase = glGenLists(200);
 	glBindTexture(GL_TEXTURE_2D, tex);
 	for (GLint ascii = 0; ascii < 200; ascii++) {
-		Rect rect = getTexCoords(ascii);
+		AERect rect = getTexCoords(ascii);
 		glNewList(listBase + ascii, GL_COMPILE);
 			glBegin(GL_QUADS);
 				glTexCoord2f(rect.x1, rect.y1);

@@ -1,8 +1,5 @@
 #pragma once
 
-#define SCREEN_WIDTH			640
-#define SCREEN_HEIGHT			480
-
 #define CAM_CHASE_DIST			200.0
 #define CAM_CHASE_SPEED			0.05
 
@@ -26,16 +23,16 @@ public:
 	GLvoid releaseLeft() { keyLeftDown = 0; }
 	GLvoid releaseRight() { keyRightDown = 0; }
 	GLvoid setMode(GLint _mode) { mode = _mode; }
-	GLvoid setTarget(Sprite* _target) { target = _target; }
+	GLvoid setTarget(AESprite* _target) { target = _target; }
 	GLvoid shiftCrossHair(GLfloat _shiftx, GLfloat _shifty) { crosshair.x += _shiftx;  crosshair.y += _shifty; }
-	Point getCrosshair() { return crosshair; }
+	AEPoint getCrosshair() { return crosshair; }
 
 private:
 
 	GLint mode;
-	Point crosshair;
+	AEPoint crosshair;
 	GLfloat vx, vy;
 	GLubyte keyLeftDown, keyRightDown;
-	Sprite* target;
+	AESprite* target;
 
 };

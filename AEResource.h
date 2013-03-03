@@ -28,7 +28,6 @@ public:
 
 	AEResourceTable();
 	GLvoid addAt(GLint index, AEResource* res);
-	GLvoid loadResourcesFromFile(char* dataFileName);
 	AEResource* get(GLint index) { return table[index]; }
 
 private:

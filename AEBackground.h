@@ -1,4 +1,6 @@
-#pragma once		
+#pragma once
+
+using namespace std;
 
 
 typedef struct _LandformElem {
@@ -96,7 +98,7 @@ public:
 	AEPoint getLocation() { return location; }
 	GLint getWidth() { return width; }
 	GLint getHeight() { return height; }
-	GLvoid setName(const char* _name) { strcpy(name, _name); }
+	GLvoid setName(string _name) { name = _name; }
 	GLvoid setLocation(GLfloat _x, GLfloat _y) { location.x = _x;  location.y = _y; }
 	GLvoid setWidth(GLint _width) { width = _width; }
 	GLvoid setHeight(GLint _height) { height = _height; }
@@ -104,7 +106,7 @@ public:
 
 private:
 
-	char name[50];
+	string name;
 	AEPoint location;
 	GLint width, height;
 	GLint layerCount, landformCount;

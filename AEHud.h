@@ -1,9 +1,14 @@
 #pragma once
 
+#include <string>
+#include "AEFont.h"
+
+using namespace std;
 
 typedef struct _Text {
 
-	Font font;
+	AEFont* font;
+	string text;
 	GLint x, y;
 
 } Text;
@@ -16,7 +21,7 @@ public:
 	static const GLint MAX_TEXT_COUNTS			= 30;
 
 	AEHeadUpDisplay();
-	GLvoid addText(GLint x, GLint y, Font font);
+	GLvoid addText(GLint x, GLint y, GLint fontIndex, string text);
 	GLvoid update();
 	GLvoid paint();
 

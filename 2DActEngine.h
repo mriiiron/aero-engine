@@ -1,8 +1,9 @@
 #include "AEAI.h"
+#include "AECollision.h"
 #include "AEObject.h"
 #include "AEPhysics.h"
 #include "AEResource.h"
-#include "AESystemVariable.h"
+#include "AESystemParam.h"
 
 #include "AEParticleSystem.h"
 
@@ -19,6 +20,8 @@
 #include "AEUtility.h"
 
 AEResourceTable rTable;
+AEObjectTable oTable;
 AEBackgroundLibrary bgLib;
 AEFontLibrary fontLib;
 AEParticleSystem ptclSys;
+AECamera camera;

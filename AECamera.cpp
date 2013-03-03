@@ -6,8 +6,8 @@
 
 #define NULL					0
 
-extern SpriteTable sTable;
-extern ObjectTable oTable;
+extern AESpriteTable sTable;
+extern AEObjectTable oTable;
 
 GLvoid AECamera::init() {
 	mode = MODE_STABLE;
@@ -31,7 +31,7 @@ GLvoid AECamera::update() {
 	case MODE_CHASE:
 		distX = target->getCx() - crosshair.x;
 		GLint fac;
-		if (target->getFacing() == FACING_RIGHT)
+		if (target->getFacing() == AESprite::FACING_RIGHT)
 			fac = 1;
 		else
 			fac = -1;
@@ -63,6 +63,6 @@ GLvoid AECamera::changeTarget() {
 		targetIndex++;
 		if (targetIndex >= sTable.getHashCount())
 			targetIndex = 0;
-	} while (oTable.get(sTable.getByHash(targetIndex)->getOid()).getType() != OBJ_CHARACTER);
+	} while (oTable.get(sTable.getByHash(targetIndex)->getOid())->getType() != OBJ_CHARACTER);
 	setTarget(sTable.getByHash(targetIndex));
 }

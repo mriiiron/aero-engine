@@ -18,7 +18,7 @@ public:
 	GLvoid setHeight(GLint _height) { fontH = _height; }
 	GLvoid setTexture(GLint _tex) { tex = _tex; }
 	GLvoid setName(const char* _name) { strcpy(name, _name); }
-	Rect getTexCoords(GLint imgOffset);
+	AERect getTexCoords(GLint imgOffset);
 
 private:
 
@@ -38,6 +38,7 @@ public:
 	
 	AEFontLibrary();
 	GLvoid add(AEFont* font);
+	AEFont* getFont(GLint index) { return lib[index]; }
 
 private:
 

@@ -11,8 +11,6 @@ This file contains items that are commonly used in other files.
 
 #define NULL					0
 
-#define MAX_CHAR_COUNT_IN_LINE	100
-
 #define INVERSE_X				0
 #define INVERSE_Y				1
 

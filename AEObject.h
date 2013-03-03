@@ -209,6 +209,8 @@ public:
 	static const GLint ACT_PROJ_DESTROYED		= 20;
 	static const GLint ACT_PROJ_DISAPPEAR		= 30;
 
+	static const GLint INPUT_COUNT				= 13;
+
 	GLvoid loadDataByObjName(char* objectName);
 	GLvoid addAnimToSlot(GLint slot, Animation _anim) { anim[slot] = _anim; }
 	GLvoid setOid(GLint _oid) { oid = _oid; }

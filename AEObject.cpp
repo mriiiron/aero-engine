@@ -13,13 +13,16 @@ Moreover the Fonts are also loaded while loading Objects.
 *******************************************************************/
 
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <fstream>
 #include <GL\glut.h>
+#include "AESystemParam.h"
 #include "AEUtility.h"
-#include "AEResource.h"
 #include "AEKeyboard.h"
+#include "AEResource.h"
 #include "AEObject.h"
+
+using namespace std;
 
 extern AEResourceTable rTable;
 extern AEObjectTable oTable;
@@ -96,7 +99,7 @@ GLvoid Animation::setHoldKey(GLint index, GLbyte _key) {
 GLvoid Animation::setJump(GLint index, GLint _action, GLbyte _input) {
 	if (frames[index].jumpTo == NULL) {
 		frames[index].jumpTo = new JumpParas;
-		for (GLint i = 0; i < AEKeyboardHandler::INPUT_COUNT; i++) frames[index].jumpTo->action[i] = 0;
+		for (GLint i = 0; i < AEObject::INPUT_COUNT; i++) frames[index].jumpTo->action[i] = 0;
 	}
 	frames[index].jumpTo->action[_input] = _action;
 }
@@ -111,8 +114,8 @@ GLvoid Animation::setFrameImage(GLint index, GLint _rid, GLint _offset, GLint _c
 	frames[index].rid = _rid;
 	frames[index].imgOffset = _offset;
 	frames[index].imgCells = _cells;
-	frames[index].width = _cells * rTable.get(_rid).getCellWidth();
-	frames[index].height = rTable.get(_rid).getCellHeight();
+	frames[index].width = _cells * rTable.get(_rid)->getCellWidth();
+	frames[index].height = rTable.get(_rid)->getCellHeight();
 }
 
 GLvoid Animation::setFrameCenter(GLint index, GLint _centerx, GLint _centery) {
@@ -136,7 +139,7 @@ GLvoid Animation::cloneFrame(GLint srcIndex, GLint dstIndex) {
 	}
 	if (frames[srcIndex].jumpTo != NULL) {
 		frames[dstIndex].jumpTo = new JumpParas;
-		for (GLint i = 0; i < AEKeyboardHandler::INPUT_COUNT; i++) {
+		for (GLint i = 0; i < AEObject::INPUT_COUNT; i++) {
 			frames[dstIndex].jumpTo->action[i] = frames[srcIndex].jumpTo->action[i];
 		}
 	}
@@ -162,72 +165,72 @@ GLvoid Animation::cloneFrame(GLint srcIndex, GLint dstIndex) {
 	}
 }
 
-GLbyte keyStrToByte(const char* keyStr) {
-	if (strcmp(keyStr, "none") == 0) {
+GLbyte keyStrToByte(string keyStr) {
+	if (keyStr == "none") {
 		return AEKeyboardHandler::KS_NONE;
 	}
-	else if (strcmp(keyStr, "attack") == 0) {
+	else if (keyStr == "attack") {
 		return AEKeyboardHandler::BKS_ATTACK;
 	}
-	else if (strcmp(keyStr, "jump") == 0) {
+	else if (keyStr == "jump") {
 		return AEKeyboardHandler::BKS_JUMP;
 	}
-	else if (strcmp(keyStr, "defend") == 0) {
+	else if (keyStr == "defend") {
 		return AEKeyboardHandler::BKS_DEFEND;
 	}
-	else if (strcmp(keyStr, "up") == 0) {
+	else if (keyStr == "up") {
 		return AEKeyboardHandler::AKS_UP;
 	}
-	else if (strcmp(keyStr, "down") == 0) {
+	else if (keyStr == "down") {
 		return AEKeyboardHandler::AKS_DOWN;
 	}
-	else if (strcmp(keyStr, "left") == 0) {
+	else if (keyStr == "left") {
 		return AEKeyboardHandler::AKS_LEFT;
 	}
-	else if (strcmp(keyStr, "right") == 0) {
+	else if (keyStr == "right") {
 		return AEKeyboardHandler::AKS_RIGHT;
 	}
 	return 0;
 }
 
 GLbyte keyStrToInputCode(const char* keyStr) {
-	if (strcmp(keyStr, "i_8") == 0) {
+	if (keyStr == "i_8") {
 		return AEKeyboardHandler::INPUT_8;
 	}
-	else if (strcmp(keyStr, "i_2") == 0) {
+	else if (keyStr == "i_2") {
 		return AEKeyboardHandler::INPUT_2;
 	}
-	else if (strcmp(keyStr, "i_4") == 0) {
+	else if (keyStr == "i_4") {
 		return AEKeyboardHandler::INPUT_4;
 	}
-	else if (strcmp(keyStr, "i_6") == 0) {
+	else if (keyStr == "i_6") {
 		return AEKeyboardHandler::INPUT_6;
 	}
-	else if (strcmp(keyStr, "i_A") == 0) {
+	else if (keyStr == "i_A") {
 		return AEKeyboardHandler::INPUT_A;
 	}
-	else if (strcmp(keyStr, "i_J") == 0) {
+	else if (keyStr == "i_J") {
 		return AEKeyboardHandler::INPUT_J;
 	}
-	else if (strcmp(keyStr, "i_D") == 0) {
+	else if (keyStr == "i_D") {
 		return AEKeyboardHandler::INPUT_D;
 	}
-	else if (strcmp(keyStr, "i_8A") == 0) {
+	else if (keyStr == "i_8A") {
 		return AEKeyboardHandler::INPUT_8A;
 	}
-	else if (strcmp(keyStr, "i_2A") == 0) {
+	else if (keyStr == "i_2A") {
 		return AEKeyboardHandler::INPUT_2A;
 	}
-	else if (strcmp(keyStr, "i_4A") == 0) {
+	else if (keyStr == "i_4A") {
 		return AEKeyboardHandler::INPUT_4A;
 	}
-	else if (strcmp(keyStr, "i_6A") == 0) {
+	else if (keyStr == "i_6A") {
 		return AEKeyboardHandler::INPUT_6A;
 	}
-	else if (strcmp(keyStr, "i_236A") == 0) {
+	else if (keyStr == "i_236A") {
 		return AEKeyboardHandler::INPUT_236A;
 	}
-	else if (strcmp(keyStr, "i_8D") == 0) {
+	else if (keyStr == "i_8D") {
 		return AEKeyboardHandler::INPUT_8D;
 	}
 	return 0;
@@ -235,12 +238,12 @@ GLbyte keyStrToInputCode(const char* keyStr) {
 
 GLvoid AEObject::loadDataByObjName(char* objectName) {
 	char path[100];
-	char line[MAX_CHAR_COUNT_IN_LINE];
+	char line[AESysParam::MAX_CHAR_COUNT_IN_LINE];
 	char* item;
 	sprintf(path, "res\\%s\\data.txt", objectName);
 	std::ifstream fs(path);
 	while (!fs.eof()) {
-	fs.getline(line, MAX_CHAR_COUNT_IN_LINE);
+	fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
 		switch (line[0]) {
 		case '%':
 			break;
@@ -302,7 +305,7 @@ GLvoid AEObject::loadDataByObjName(char* objectName) {
 				else {
 					// Error
 				}
-				fs.getline(line, MAX_CHAR_COUNT_IN_LINE);
+				fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
 				GLint frameNum = 0, endTime = 0;
 				while (strcmp(line, "#endaction") != 0) {
 					item = strtok_s(line, " ", &context);
@@ -438,7 +441,7 @@ GLvoid AEObject::loadDataByObjName(char* objectName) {
 
 GLvoid AEObjectTable::loadObjectsFromFile(char* dataFileName) {
 	std::ifstream fs(dataFileName);
-	char line[MAX_CHAR_COUNT_IN_LINE];
+	char line[AESysParam::MAX_CHAR_COUNT_IN_LINE];
 	printf("*** LOADING OBJECTS .. ***\n");
 	while (!fs.eof()) {
 		fs.getline(line, sizeof(line));

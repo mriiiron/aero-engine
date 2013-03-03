@@ -4,8 +4,9 @@
 #include <math.h>
 #include <GL\glut.h>
 #include "AEUtility.h"
-#include "AESprite.h"
 #include "AEObject.h"
+#include "AESprite.h"
+#include "AEKeyboard.h"
 #include "AEAI.h"
 
 extern AESpriteTable sTable;
@@ -28,7 +29,7 @@ GLvoid AEAI::execute() {
 
 	// Common AEAI Operations
 	releaseAllKeys();
-	if (self->getState() == STATE_CHAR_DEAD) {
+	if (self->getState() == AEObject::STATE_CHAR_DEAD) {
 		setTarget(NULL);
 		disable();
 		return;
@@ -45,8 +46,8 @@ GLvoid AEAI::execute() {
 
 		for (GLint i = 0; i < sTable.getHashCount(); i++) {
 			AESprite* s = sTable.getByHash(i);
-			if (oTable.get(s->getOid()).getType() == OBJ_PROJECTILE) {
-				if (floor(checkdistXWith(s) / s->getVx()) < 15 && s->getState() == STATE_PROJ_FLY) {
+			if (oTable.get(s->getOid())->getType() == OBJ_PROJECTILE) {
+				if (floor(checkdistXWith(s) / s->getVx()) < 15 && s->getState() == AEObject::STATE_PROJ_FLY) {
 					self->pressDefend();
 					return;
 				}
@@ -54,7 +55,7 @@ GLvoid AEAI::execute() {
 		}
 		distX = checkdistXWith(target);
 		switch (target->getState()) {
-		case STATE_CHAR_ATK_H:
+		case AEObject::STATE_CHAR_ATK_H:
 			if (distX < 100) {
 				self->pressDefend();
 			}
@@ -64,11 +65,11 @@ GLvoid AEAI::execute() {
 					self->pressDefend();
 				}
 				else {
-					self->input(INPUT_8A);
+					self->input(AEKeyboardHandler::INPUT_8A);
 				}
 			}
 			break;
-		case STATE_CHAR_ATK_V:
+		case AEObject::STATE_CHAR_ATK_V:
 			if (distX < 150) {
 				self->pressUp();
 				self->pressDefend();
@@ -77,12 +78,12 @@ GLvoid AEAI::execute() {
 				self->pressForward();
 			}
 			break;
-		case STATE_CHAR_ATK:
+		case AEObject::STATE_CHAR_ATK:
 			if (distX < 90) {
 				self->pressDefend();
 			}
 			else if (distX < 120) {
-				self->input(INPUT_A);
+				self->input(AEKeyboardHandler::INPUT_A);
 			}
 			else { 
 				GLint alt = randomIntBetween(0, 5);
@@ -90,13 +91,13 @@ GLvoid AEAI::execute() {
 					self->pressForward();
 				}
 				else if (alt < 3) {
-					self->input(INPUT_A);
+					self->input(AEKeyboardHandler::INPUT_A);
 				}
 				else if (alt < 5) {
-					self->input(INPUT_2A);
+					self->input(AEKeyboardHandler::INPUT_2A);
 				}
 				else {
-					self->input(INPUT_8A);
+					self->input(AEKeyboardHandler::INPUT_8A);
 				}
 			}
 			break;
@@ -107,28 +108,28 @@ GLvoid AEAI::execute() {
 					self->pressBackward();
 				}
 				else {
-					self->input(INPUT_A);
+					self->input(AEKeyboardHandler::INPUT_A);
 				}
 			}
 			if (distX < 90) {
 				GLint alt = randomIntBetween(0, 3);
 				if (alt < 2) {
-					self->input(INPUT_2A);
+					self->input(AEKeyboardHandler::INPUT_2A);
 				}
 				else {
-					self->input(INPUT_A);
+					self->input(AEKeyboardHandler::INPUT_A);
 				}
 			}
 			else if (distX < 120) {
 				GLint alt = randomIntBetween(0, 4);
 				if (alt < 2) {
-					self->input(INPUT_8A);
+					self->input(AEKeyboardHandler::INPUT_8A);
 				}
 				else if (alt < 4) {
-					self->input(INPUT_2A);
+					self->input(AEKeyboardHandler::INPUT_2A);
 				}
 				else if (alt < 5) {
-					self->input(INPUT_A);
+					self->input(AEKeyboardHandler::INPUT_A);
 				}
 				else {
 					self->pressForward();
@@ -144,8 +145,8 @@ GLvoid AEAI::execute() {
 
 		for (GLint i = 0; i < sTable.getHashCount(); i++) {
 			AESprite* s = sTable.getByHash(i);
-			if (oTable.get(s->getOid()).getType() == OBJ_PROJECTILE) {
-				if (floor(checkdistXWith(s) / s->getVx()) < 15 && s->getState() == STATE_PROJ_FLY) {
+			if (oTable.get(s->getOid())->getType() == OBJ_PROJECTILE) {
+				if (floor(checkdistXWith(s) / s->getVx()) < 15 && s->getState() == AEObject::STATE_PROJ_FLY) {
 					self->pressDefend();
 					return;
 				}
@@ -153,7 +154,7 @@ GLvoid AEAI::execute() {
 		}
 		distX = checkdistXWith(target);
 		switch (target->getState()) {
-		case STATE_CHAR_ATK_H:
+		case AEObject::STATE_CHAR_ATK_H:
 			if (distX < 100) {
 				self->pressDefend();
 			}
@@ -163,23 +164,23 @@ GLvoid AEAI::execute() {
 					self->pressDefend();
 				}
 				else {
-					self->input(INPUT_2A);
+					self->input(AEKeyboardHandler::INPUT_2A);
 				}
 			}
 			else if (distX < 140) {
 				GLint alt = randomIntBetween(0, 3);
 				if (alt < 1) {
-					self->input(INPUT_2A);
+					self->input(AEKeyboardHandler::INPUT_2A);
 				}
 				else {
-					self->input(INPUT_8A);
+					self->input(AEKeyboardHandler::INPUT_8A);
 				}
 			}
 			else {
 				self->pressForward();
 			}
 			break;
-		case STATE_CHAR_ATK_V:
+		case AEObject::STATE_CHAR_ATK_V:
 			if (distX < 100) {
 				self->pressDefend();
 			}
@@ -189,7 +190,7 @@ GLvoid AEAI::execute() {
 					self->pressDefend();
 				}
 				else {
-					self->input(INPUT_2A);
+					self->input(AEKeyboardHandler::INPUT_2A);
 				}
 			}
 			else {
@@ -202,23 +203,23 @@ GLvoid AEAI::execute() {
 				}
 			}
 			break;
-		case STATE_CHAR_ATK:
+		case AEObject::STATE_CHAR_ATK:
 			if (distX < 80) {
 				GLint alt = randomIntBetween(0, 3);
 				if (alt < 3) {
 					self->pressDefend();
 				}
 				else {
-					self->input(INPUT_2A);
+					self->input(AEKeyboardHandler::INPUT_2A);
 				}
 			}
 			else if (distX < 100) {
 				GLint alt = randomIntBetween(0, 3);
 				if (alt < 3) {
-					self->input(INPUT_2A);
+					self->input(AEKeyboardHandler::INPUT_2A);
 				}
 				else {
-					self->input(INPUT_A);
+					self->input(AEKeyboardHandler::INPUT_A);
 				}
 			}
 			else if (distX < 140) {
@@ -227,7 +228,7 @@ GLvoid AEAI::execute() {
 					self->pressForward();
 				}
 				else {
-					self->input(INPUT_8A);
+					self->input(AEKeyboardHandler::INPUT_8A);
 				}
 			}
 			else {
@@ -241,30 +242,30 @@ GLvoid AEAI::execute() {
 					self->pressBackward();
 				}
 				else if (alt < 3) {
-					self->input(INPUT_2A);
+					self->input(AEKeyboardHandler::INPUT_2A);
 				}
 				else {
-					self->input(INPUT_A);
+					self->input(AEKeyboardHandler::INPUT_A);
 				}
 			}
 			else if (distX < 105) {
-				if (self->getState() == STATE_CHAR_ATK) {
-					self->input(INPUT_8A);
+				if (self->getState() == AEObject::STATE_CHAR_ATK) {
+					self->input(AEKeyboardHandler::INPUT_8A);
 				}
 				else {
 					GLint alt = randomIntBetween(0, 3);
 					if (alt < 2) {
-						self->input(INPUT_A);
+						self->input(AEKeyboardHandler::INPUT_A);
 					}
 					else {
-						self->input(INPUT_2A);
+						self->input(AEKeyboardHandler::INPUT_2A);
 					}
 				}
 			}
 			else if (distX < 130) {
 				GLint alt = randomIntBetween(0, 5);
 				if (alt < 3) {
-					self->input(INPUT_8A);
+					self->input(AEKeyboardHandler::INPUT_8A);
 				}
 				else if (alt < 4) {
 					self->pressForward();
@@ -280,17 +281,17 @@ GLvoid AEAI::execute() {
 
 		for (GLint i = 0; i < sTable.getHashCount(); i++) {
 			AESprite* s = sTable.getByHash(i);
-			if (oTable.get(s->getOid()).getType() == OBJ_PROJECTILE) {
-				if (floor(checkdistXWith(s) / s->getVx()) < 15 && s->getState() == STATE_PROJ_FLY) {
+			if (oTable.get(s->getOid())->getType() == OBJ_PROJECTILE) {
+				if (floor(checkdistXWith(s) / s->getVx()) < 15 && s->getState() == AEObject::STATE_PROJ_FLY) {
 					self->pressDefend();
 					return;
 				}
 			}
 		}
-		if (target->getState() == STATE_CHAR_ATK || target->getState() == STATE_CHAR_ATK_H) {
+		if (target->getState() == AEObject::STATE_CHAR_ATK || target->getState() == AEObject::STATE_CHAR_ATK_H) {
 			self->pressDefend();
 		}
-		else if (target->getState() == STATE_CHAR_ATK_V) {
+		else if (target->getState() == AEObject::STATE_CHAR_ATK_V) {
 			self->pressUp();
 			self->pressDefend();
 		}
