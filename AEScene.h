@@ -1,5 +1,9 @@
 #pragma once
 
+#include "AEHud.h"
+#include "AEBackground.h"
+#include "AESprite.h"
+
 
 class AEScene {
 

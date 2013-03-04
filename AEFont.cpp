@@ -4,7 +4,6 @@
 #include <stdarg.h>
 #include <windows.h>
 #include <GL\glut.h>
-#include "AEUtility.h"
 #include "AEFont.h"
 
 AERect AEFont::getTexCoords(GLint imgOffset) {

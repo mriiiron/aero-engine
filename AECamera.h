@@ -3,6 +3,8 @@
 #define CAM_CHASE_DIST			200.0
 #define CAM_CHASE_SPEED			0.05
 
+#include "AESprite.h"
+
 class AECamera {
 
 public:

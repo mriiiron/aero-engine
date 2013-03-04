@@ -18,6 +18,11 @@ its animation from "Standing" to "Attacking".
 
 #pragma once
 
+#include <string>
+#include "AEKeyboard.h"
+
+using namespace std;
+
 
 // Sparks
 #define OBJECT_SPARK			99
@@ -100,24 +105,6 @@ typedef struct _Frame {
 // Animation Class: Arranges what and how frames should be displayed.
 class Animation {
 
-private:
-
-	// Defining frames. Each frame has a time value to indicate that when it would change to next frame.
-	GLint frameCount;
-	Frame* frames;
-	GLint* endTimes;
-
-	// Indicating whether this animation is loopable.
-	// If so, then we should define its time to live. When it is expired, it would change to its next animation.
-	// If not so, this animation would change to next animation just when it finishes.
-	GLint animLoop, timeToLive, next;
-	
-	// When displaying this Animation, the object is at which state.
-	GLint state;
-
-	// Animation name. May be used.
-	char name[100];
-
 public:
 
 	Animation();
@@ -125,7 +112,7 @@ public:
 	GLvoid setFrameCenter(GLint index, GLint _centerx, GLint _centery);
 	GLvoid cloneFrame(GLint srcIndex, GLint dstIndex);
 	GLvoid init(GLint _frameCount, GLint _isLoop);
-	GLvoid setName(const char* _name) { strcpy(name, _name); }
+	GLvoid setName(string _name) { name == _name; }
 	GLvoid setState(GLint _state) { state = _state; }
 	GLvoid setNext(GLint _next) { next = _next; }
 	GLvoid setTTL(GLint _timeToLive) { timeToLive = _timeToLive; }
@@ -149,6 +136,25 @@ public:
 	GLint getNext() { return next; }
 	GLint getTTL() { return timeToLive; }
 	GLint getState() { return state; }
+
+private:
+
+	// Defining frames. Each frame has a time value to indicate that when it would change to next frame.
+	GLint frameCount;
+	Frame* frames;
+	GLint* endTimes;
+
+	// Indicating whether this animation is loopable.
+	// If so, then we should define its time to live. When it is expired, it would change to its next animation.
+	// If not so, this animation would change to next animation just when it finishes.
+	GLint animLoop, timeToLive, next;
+	
+	// When displaying this Animation, the object is at which state.
+	GLint state;
+
+	// Animation name. May be used.
+	string name;
+
 };
 
 // OBJECT: a complex union consists of various kinds of data:
@@ -214,7 +220,7 @@ public:
 	GLvoid loadDataByObjName(char* objectName);
 	GLvoid addAnimToSlot(GLint slot, Animation _anim) { anim[slot] = _anim; }
 	GLvoid setOid(GLint _oid) { oid = _oid; }
-	GLvoid setName(const char* _name) { strcpy(name, _name); }
+	GLvoid setName(string _name) { name = _name; }
 	GLvoid setType(GLint _type) {
 		switch (_type) {
 		case 0: otype = OBJ_CHARACTER;  break;
@@ -224,12 +230,12 @@ public:
 	}
 	Animation getAnim(GLint index) { return anim[index]; }
 	ObjType getType() { return otype; }
-	char* getName() { return name; }
+	string getName() { return name; }
 
 private:
 
 	GLint oid;
-	char name[20];
+	string name;
 	Animation anim[MAX_OBJECT_ACTIONS];
 	ObjType otype;
 

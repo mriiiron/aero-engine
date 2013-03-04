@@ -5,22 +5,16 @@
 #include <GL\glut.h>
 #include <math.h>
 #include "AEUtility.h"
+#include "AEPhysics.h"
 #include "AEResource.h"
 #include "AEKeyboard.h"
 #include "AEBackground.h"
-#include "AEParticleSystem.h"
-#include "AEPhysics.h"
-#include "AECollision.h"
-#include "AEObject.h"
 #include "AEScene.h"
 #include "AESprite.h"
+#include "AECollision.h"
 
 extern AEResourceTable rTable;
 extern AEObjectTable oTable;
-extern AESpriteTable sTable;
-extern AEParticleSystem ptclSys;
-
-extern GLint showCrosshair;
 
 AESprite::AESprite(AEScene* scene, GLint _oid, GLint _team, GLfloat _cx, GLfloat _cy, GLint _action, GLint inverse) {
 	oid = _oid;  team = _team;  cx = _cx;  cy = _cy;
@@ -75,9 +69,13 @@ AEBiasRect AESprite::calcRotatedRect(GLfloat cx, GLfloat cy, Frame* f, GLint ang
 	return bRect;
 }
 
+string AESprite::getObjName() {
+	return oTable.get(oid)->getName();
+}
+
 GLvoid AESprite::changeAction(GLint _action) {
 	if (_action == 1000) {
-		sTable.remove(index);
+		scene->getSpriteTable()->remove(index);
 		return;
 	}
 	action = _action;
@@ -102,11 +100,11 @@ GLvoid AESprite::changeAction(GLint _action) {
 	}
 	if (anim.getFrame(frame).cast != NULL) {
 		Frame f = anim.getFrame(frame);
-		AEPoint castPoint = calcRotatedPoint(cx, cy, f, angle, facing);
+		AEPoint castPoint = calcRotatedPoint(cx, cy, &f, angle, facing);
 		if (facing == 0)
-			sTable.add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
+			scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
 		else
-			sTable.add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
+			scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
 	}
 }
 
@@ -481,11 +479,11 @@ GLvoid AESprite::update() {
 			}
 			if (anim.getFrame(frame).cast != NULL) {
 				Frame f = anim.getFrame(frame);
-				AEPoint castPoint = calcRotatedPoint(cx, cy, f, angle, facing);
+				AEPoint castPoint = calcRotatedPoint(cx, cy, &f, angle, facing);
 				if (facing == 0)
-					sTable.add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
+					scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
 				else
-					sTable.add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
+					scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
 			}
 		}
 	}
@@ -512,17 +510,13 @@ GLvoid AESprite::paint() {
 	Frame f = obj->getAnim(action).getFrame(frame);
 	AEResource* res = rTable.get(f.rid);
 	AERect texClip = res->getTexCoords(f.imgOffset, f.imgCells);
-	AEBiasRect sprRect = calcRotatedRect(cx, cy, f, angle, facing);
+	AEBiasRect sprRect = calcRotatedRect(cx, cy, &f, angle, facing);
 	if (facing == FACING_RIGHT)
 		paintRect(res->getTexture(), texClip, sprRect);
 	else
 		paintRect(res->getTexture(), getInversedRect(texClip, INVERSE_X), sprRect);
-	if (showCrosshair)
-		paintCrosshair();
-}
-
-char* AESprite::getObjName() {
-	return oTable.get(oid)->getName();
+	//if (showCrosshair)
+	//	paintCrosshair();
 }
 
 AESpriteTable::AESpriteTable() {
@@ -604,8 +598,8 @@ GLvoid AESpriteTable::handleCollisions() {
 				if (s1->getTeam() == s2->getTeam())
 					continue;
 				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction()).getFrame(s2->getFrame());
-				if (f2.body != NULL && AECollision::check(s1, s2, f1, f2, &sparkPos, &bloodPos)) {
-					AECollision::handle(s1, s2, f1, f2, sparkPos, bloodPos);
+				if (f2.body != NULL && AECollision::check(s1, s2, &f1, &f2, &sparkPos, &bloodPos)) {
+					AECollision::handle(s1, s2, &f1, &f2, sparkPos, bloodPos);
 				}
 			}
 		}
@@ -615,8 +609,8 @@ GLvoid AESpriteTable::handleCollisions() {
 				if (s2->isAtkJudgeLocked() || s1->getTeam() == s2->getTeam())
 					continue;
 				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction()).getFrame(s2->getFrame());
-				if (f2.attack != NULL && AECollision::check(s2, s1, f2, f1, &sparkPos, &bloodPos)) {
-					AECollision::handle(s2, s1, f2, f1, sparkPos, bloodPos);
+				if (f2.attack != NULL && AECollision::check(s2, s1, &f2, &f1, &sparkPos, &bloodPos)) {
+					AECollision::handle(s2, s1, &f2, &f1, sparkPos, bloodPos);
 				}
 			}
 		}

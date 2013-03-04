@@ -3,7 +3,6 @@
 #include <fstream>
 #include <GL\glut.h>
 #include "AEImageLoader.h"
-#include "AEUtility.h"
 #include "AEResource.h"
 
 extern char* context;

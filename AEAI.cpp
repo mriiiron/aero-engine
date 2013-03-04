@@ -322,7 +322,7 @@ GLvoid AEAITable::add(AEAI* ai) {
 			return;
 		}
 	}
-	if (maxIndex == MAX_ONLINE_SPRITES - 1) {
+	if (maxIndex == AESpriteTable::MAX_ONLINE_SPRITES - 1) {
 		printf("Too many sprites online ..\n");
 	}
 	else {

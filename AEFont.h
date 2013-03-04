@@ -1,5 +1,10 @@
 #pragma once
 
+#include <string>
+#include "AEUtility.h"
+
+using namespace std;
+
 
 class AEFont {
 
@@ -17,7 +22,7 @@ public:
 	GLvoid setWidth(GLint _width) { fontW = _width; }
 	GLvoid setHeight(GLint _height) { fontH = _height; }
 	GLvoid setTexture(GLint _tex) { tex = _tex; }
-	GLvoid setName(const char* _name) { strcpy(name, _name); }
+	GLvoid setName(string _name) { name == _name; }
 	AERect getTexCoords(GLint imgOffset);
 
 private:
@@ -25,7 +30,7 @@ private:
 	GLint tex;
 	GLint listBase;
 	GLint fontW, fontH;
-	char name[50];
+	string name;
 
 };
 

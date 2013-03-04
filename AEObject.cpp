@@ -13,12 +13,10 @@ Moreover the Fonts are also loaded while loading Objects.
 *******************************************************************/
 
 #include <stdio.h>
-#include <string>
 #include <fstream>
 #include <GL\glut.h>
 #include "AESystemParam.h"
 #include "AEUtility.h"
-#include "AEKeyboard.h"
 #include "AEResource.h"
 #include "AEObject.h"
 
@@ -33,7 +31,7 @@ Animation::Animation() {
 	frames = NULL;  endTimes = NULL;
 	frameCount = animLoop = next = state = 0;
 	timeToLive = -1;
-	strcpy(name, "");
+	name == string("Unnamed Animation");
 }
 
 GLvoid Animation::init(GLint _frameCount, GLint _isLoop) {

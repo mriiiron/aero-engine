@@ -6,7 +6,6 @@
 #include "AESystemParam.h"
 #include "AEUtility.h"
 #include "AEImageLoader.h"
-#include "AEResource.h"
 #include "AEBackground.h"
 
 extern char* context;
@@ -329,7 +328,7 @@ GLvoid AEBackground::loadFromFile(const char* fileName) {
 					else {
 						// Error
 					}
-					fs.getline(line, MAX_CHAR_COUNT_IN_LINE);
+					fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
 				}
 				GLubyte inserted = 0;
 				for (GLint i = 0; i < layerAdded; i++) {

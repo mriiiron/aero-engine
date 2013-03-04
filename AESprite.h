@@ -12,6 +12,10 @@ the game is running.
 
 #pragma once
 
+#include "AEObject.h"
+
+using namespace std;
+
 
 class AEScene;
 
@@ -92,7 +96,7 @@ public:
 	/* AI ONLY */
 	GLvoid input(GLint _input);
 	/* END AI ONLY */
-	char* getObjName();
+	string getObjName();
 	GLvoid changeAction(GLint _action);
 	GLvoid update();
 	GLvoid toNextFrame(Animation anim);

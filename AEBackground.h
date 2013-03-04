@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AEResource.h"
+
 using namespace std;
 
 

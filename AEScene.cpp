@@ -1,9 +1,6 @@
 #include <GL\glut.h>
 #include "AESystemParam.h"
 #include "AEUtility.h"
-#include "AEHud.h"
-#include "AEBackground.h"
-#include "AESprite.h"
 #include "AECamera.h"
 #include "AEScene.h"
 
