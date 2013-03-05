@@ -24,9 +24,15 @@ GLvoid AEScene::stop() {
 
 GLvoid AEScene::update() {
 	// ptclSys.update();
-	sTable->update();
-	hud->update();
-	bg->update();
+	if (bg != NULL) {
+		bg->update();
+	}
+	if (sTable != NULL) {
+		sTable->update();
+	}
+	if (hud != NULL) {
+		hud->update();
+	}
 	//camera->update();
 	//AESysParam::aiTimer--;
 	//if (AESysParam::aiTimer == 0) {

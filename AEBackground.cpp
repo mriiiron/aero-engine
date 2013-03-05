@@ -406,10 +406,18 @@ GLvoid AEBackground::paint(AEPoint cameraCenter) {
 	}
 }
 
-
 AEBackgroundLibrary::AEBackgroundLibrary() {
 	maxIndex = 0;
 	for (int i = 0; i < MAX_BG_COUNT; i++) {
 		lib[i] = NULL;
 	}
+}
+
+GLvoid AEBackgroundLibrary::add(AEBackground* bg) {
+	if (maxIndex > MAX_BG_COUNT) {
+		// Error
+		return;
+	}
+	lib[maxIndex] = bg;
+	maxIndex++;
 }

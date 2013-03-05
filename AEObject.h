@@ -217,7 +217,9 @@ public:
 
 	static const GLint INPUT_COUNT				= 13;
 
-	GLvoid loadDataByObjName(char* objectName);
+	static GLbyte keyStrToByte(string keyStr);
+	static GLbyte keyStrToInputCode(string keyStr);
+
 	GLvoid addAnimToSlot(GLint slot, Animation _anim) { anim[slot] = _anim; }
 	GLvoid setOid(GLint _oid) { oid = _oid; }
 	GLvoid setName(string _name) { name = _name; }
@@ -248,7 +250,6 @@ public:
 
 	static const GLint MAX_TOTAL_OBJECTS		= 100;
 
-	GLvoid loadObjectsFromFile(char* dataFileName);
 	GLvoid addAt(GLint index, AEObject* obj) { table[index] = obj; }
 	AEObject* get(GLint index) { return table[index]; }
 

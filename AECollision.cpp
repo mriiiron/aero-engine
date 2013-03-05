@@ -6,8 +6,6 @@
 #include "AESprite.h"
 #include "AECollision.h"
 
-extern AESpriteTable sTable;
-
 GLboolean AECollision::check(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEPoint* pSparkPos, AEPoint* pBloodPos) {
 	GLint s1x1, s1y1, s1x2, s1y2, s2x1, s2y1, s2x2, s2y2;
 	GLint cx1 = s1->getCx();  GLint cy1 = s1->getCy();  GLint centerx1 = f1->centerx;  GLint centery1 = f1->centery;
@@ -54,7 +52,7 @@ GLvoid AECollision::handle(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEP
 		if (f1->attack->type == 99) {
 			if (f2->block->type == 99) {
 				printf("Clash!\n");
-				sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_SPECIAL));
+				// sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_SPECIAL));
 				s1->changeAction(f1->attack->blownOffTo);
 				s2->changeAction(f2->block->breakTo);
 				s1->stiffen(4);
@@ -70,7 +68,7 @@ GLvoid AECollision::handle(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEP
 			}
 			else {
 				printf("Blocked, but cannot force back!\n");
-				sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_BLOCK));
+				// sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_BLOCK));
 				s2->changeAction(f2->block->blockTo);
 				s1->stiffen(3);
 				s2->stiffen(3);
@@ -82,7 +80,7 @@ GLvoid AECollision::handle(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEP
 		}
 		else if (f2->block->type == 99) {
 			printf("Blown off!\n");
-			sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_SPECIAL));
+			// sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_SPECIAL));
 			s1->changeAction(f1->attack->blownOffTo);
 			s1->stiffen(5);
 			s2->stiffen(2);
@@ -93,7 +91,7 @@ GLvoid AECollision::handle(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEP
 		}
 		else if (f1->attack->type == 0 || f2->block->type == 0 || f1->attack->type == f2->block->type) {
 			printf("Blocked.\n");
-			sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_BLOCK));
+			// sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, SPARK_BLOCK));
 			s1->changeAction(f1->attack->blockedTo);
 			s2->changeAction(f2->block->blockTo);
 			s2->takeDamage(f1->attack->damage / 10);
@@ -118,14 +116,14 @@ GLvoid AECollision::handle(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEP
 				sparkType = SPARK_HIT;
 				break;
 			}
-			AESprite* spark = new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, sparkType);
-			spark->setAngle(f1->attack->angle);
-			spark->setFacing(s1->getFacing());
-			sTable.add(spark);
+			// AESprite* spark = new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, sparkType);
+			// spark->setAngle(f1->attack->angle);
+			// spark->setFacing(s1->getFacing());
+			// sTable.add(spark);
 			s2->changeAction(AEObject::ACT_CHAR_GET_HIT);
 			s2->takeDamage(f1->attack->damage);
 			if (s2->getHP() <= 0) {
-				sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, bloodPos.x, bloodPos.y, BLOOD_CRITICAL));
+				// sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, bloodPos.x, bloodPos.y, BLOOD_CRITICAL));
 			}
 			s1->stiffen(4);
 			s2->stiffen(4);
@@ -170,10 +168,10 @@ GLvoid AECollision::handle(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEP
 			sparkType = SPARK_HIT;
 			break;
 		}
-		AESprite* spark = new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, sparkType);
-		spark->setAngle(f1->attack->angle);
-		spark->setFacing(s1->getFacing());
-		sTable.add(spark);
+		// AESprite* spark = new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, sparkPos.x, sparkPos.y, sparkType);
+		// spark->setAngle(f1->attack->angle);
+		// spark->setFacing(s1->getFacing());
+		// sTable.add(spark);
 		s2->takeDamage(f1->attack->damage);
 		s1->stiffen(4);
 		s2->stiffen(4);
@@ -207,7 +205,7 @@ GLvoid AECollision::handle(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEP
 		}
 	}
 	if (s2->getHP() <= 0) {
-		sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, bloodPos.x, bloodPos.y, BLOOD_CRITICAL));
+		// sTable.add(new AESprite(s1->getScene(), OBJECT_SPARK, AESprite::TEAM_NONE, bloodPos.x, bloodPos.y, BLOOD_CRITICAL));
 		printf("KO.\n");
 		s2->changeAction(AEObject::ACT_CHAR_DEAD);
 	}

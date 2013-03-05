@@ -16,6 +16,10 @@ GLvoid AEHeadUpDisplay::addText(GLint x, GLint y, GLint fontIndex, string text) 
 	maxTextIndex++;
 }
 
+GLvoid AEHeadUpDisplay::update() {
+
+}
+
 GLvoid AEHeadUpDisplay::paint() {
 	for (GLint i = 0; i < maxTextIndex; i++) {
 		texts[i].font->writeAt(texts[i].x, texts[i].y, texts[i].text.c_str());

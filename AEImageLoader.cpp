@@ -18,7 +18,7 @@ GLuint loadBMPTexture(const char* fileName) {
 		return -1;
 	}
 	else {
-		printf("Done.\n");
+		printf("Done\n");
 	}
 	fseek(pFile, 0x0012, SEEK_SET);
 	fread(&width, 4, 1, pFile);
@@ -132,7 +132,7 @@ GLuint loadPNGTexture(const char* fileName, GLint* pWidth, GLint* pHeight) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FreeImage_GetWidth(dib), FreeImage_GetHeight(dib), 0, GL_RGBA, GL_UNSIGNED_BYTE, bits);
 	FreeImage_Unload(dib);
 	delete[] bits;
-	printf("Done.\n");
+	printf("Done\n");
 	return texture;
 }
 
@@ -159,6 +159,6 @@ GLuint loadPNGTexture(const char* fileName) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FreeImage_GetWidth(dib), FreeImage_GetHeight(dib), 0, GL_RGBA, GL_UNSIGNED_BYTE, bits);
 	FreeImage_Unload(dib);
 	delete[] bits;
-	printf("Done.\n");
+	printf("Done\n");
 	return texture;
 }
