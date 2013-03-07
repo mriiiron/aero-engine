@@ -25,8 +25,6 @@ using namespace std;
 extern AEResourceTable rTable;
 extern AEObjectTable oTable;
 
-extern char* context;
-
 Animation::Animation() {
 	frames = NULL;  endTimes = NULL;
 	frameCount = animLoop = next = state = 0;

@@ -2,10 +2,7 @@
 
 #include <fstream>
 #include <GL\glut.h>
-#include "AEImageLoader.h"
 #include "AEResource.h"
-
-extern char* context;
 
 AERect AEResource::getTexCoords(GLint imgOffset, GLint imgCells) {
 	AERect rect;

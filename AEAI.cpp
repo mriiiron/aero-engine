@@ -60,7 +60,7 @@ GLvoid AEAI::execute() {
 				self->pressDefend();
 			}
 			else if (distX < 120) {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 3) {
 					self->pressDefend();
 				}
@@ -86,7 +86,7 @@ GLvoid AEAI::execute() {
 				self->input(AEKeyboardHandler::INPUT_A);
 			}
 			else { 
-				GLint alt = randomIntBetween(0, 5);
+				GLint alt = AEUtil::randomIntBetween(0, 5);
 				if (alt < 1) {
 					self->pressForward();
 				}
@@ -103,7 +103,7 @@ GLvoid AEAI::execute() {
 			break;
 		default:
 			if (distX < 70) {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 2) {
 					self->pressBackward();
 				}
@@ -112,7 +112,7 @@ GLvoid AEAI::execute() {
 				}
 			}
 			if (distX < 90) {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 2) {
 					self->input(AEKeyboardHandler::INPUT_2A);
 				}
@@ -121,7 +121,7 @@ GLvoid AEAI::execute() {
 				}
 			}
 			else if (distX < 120) {
-				GLint alt = randomIntBetween(0, 4);
+				GLint alt = AEUtil::randomIntBetween(0, 4);
 				if (alt < 2) {
 					self->input(AEKeyboardHandler::INPUT_8A);
 				}
@@ -159,7 +159,7 @@ GLvoid AEAI::execute() {
 				self->pressDefend();
 			}
 			else if (distX < 120) {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 3) {
 					self->pressDefend();
 				}
@@ -168,7 +168,7 @@ GLvoid AEAI::execute() {
 				}
 			}
 			else if (distX < 140) {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 1) {
 					self->input(AEKeyboardHandler::INPUT_2A);
 				}
@@ -185,7 +185,7 @@ GLvoid AEAI::execute() {
 				self->pressDefend();
 			}
 			else if (distX < 130) {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 2) {
 					self->pressDefend();
 				}
@@ -194,7 +194,7 @@ GLvoid AEAI::execute() {
 				}
 			}
 			else {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 2) {
 					self->pressDefend();
 				}
@@ -205,7 +205,7 @@ GLvoid AEAI::execute() {
 			break;
 		case AEObject::STATE_CHAR_ATK:
 			if (distX < 80) {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 3) {
 					self->pressDefend();
 				}
@@ -214,7 +214,7 @@ GLvoid AEAI::execute() {
 				}
 			}
 			else if (distX < 100) {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 3) {
 					self->input(AEKeyboardHandler::INPUT_2A);
 				}
@@ -223,7 +223,7 @@ GLvoid AEAI::execute() {
 				}
 			}
 			else if (distX < 140) {
-				GLint alt = randomIntBetween(0, 3);
+				GLint alt = AEUtil::randomIntBetween(0, 3);
 				if (alt < 1) {
 					self->pressForward();
 				}
@@ -237,7 +237,7 @@ GLvoid AEAI::execute() {
 			break;
 		default:
 			if (distX < 70) {
-				GLint alt = randomIntBetween(0, 4);
+				GLint alt = AEUtil::randomIntBetween(0, 4);
 				if (alt < 2) {
 					self->pressBackward();
 				}
@@ -253,7 +253,7 @@ GLvoid AEAI::execute() {
 					self->input(AEKeyboardHandler::INPUT_8A);
 				}
 				else {
-					GLint alt = randomIntBetween(0, 3);
+					GLint alt = AEUtil::randomIntBetween(0, 3);
 					if (alt < 2) {
 						self->input(AEKeyboardHandler::INPUT_A);
 					}
@@ -263,7 +263,7 @@ GLvoid AEAI::execute() {
 				}
 			}
 			else if (distX < 130) {
-				GLint alt = randomIntBetween(0, 5);
+				GLint alt = AEUtil::randomIntBetween(0, 5);
 				if (alt < 3) {
 					self->input(AEKeyboardHandler::INPUT_8A);
 				}

@@ -492,14 +492,14 @@ GLvoid AESprite::update() {
 
 GLvoid AESprite::paintShadow() {
 	AEResource* shadow = rTable.get(0);
-	AERect shadowRect = createRect(cx - shadow->getCellWidth() / 2, cy - drop - shadow->getCellHeight() / 2, cx + shadow->getCellWidth() / 2, cy - drop + shadow->getCellHeight() / 2);
-	paintRect(shadow->getTexture(), createRect(0.0, 0.0, 1.0, 1.0), shadowRect);
+	AERect shadowRect = AEUtil::createRect(cx - shadow->getCellWidth() / 2, cy - drop - shadow->getCellHeight() / 2, cx + shadow->getCellWidth() / 2, cy - drop + shadow->getCellHeight() / 2);
+	AEUtil::paintRect(shadow->getTexture(), AEUtil::createRect(0.0, 0.0, 1.0, 1.0), shadowRect);
 }
 
 GLvoid AESprite::paintCrosshair() {
 	AEResource* crosshair = rTable.get(100);
-	AERect crossRect = createRect(cx - crosshair->getCellWidth() / 2, cy - crosshair->getCellHeight() / 2, cx + crosshair->getCellWidth() / 2, cy + crosshair->getCellHeight() / 2);
-	paintRect(crosshair->getTexture(), createRect(0.0, 0.0, 1.0, 1.0), crossRect);
+	AERect crossRect = AEUtil::createRect(cx - crosshair->getCellWidth() / 2, cy - crosshair->getCellHeight() / 2, cx + crosshair->getCellWidth() / 2, cy + crosshair->getCellHeight() / 2);
+	AEUtil::paintRect(crosshair->getTexture(), AEUtil::createRect(0.0, 0.0, 1.0, 1.0), crossRect);
 }
 
 GLvoid AESprite::paint() {
@@ -512,9 +512,9 @@ GLvoid AESprite::paint() {
 	AERect texClip = res->getTexCoords(f.imgOffset, f.imgCells);
 	AEBiasRect sprRect = calcRotatedRect(cx, cy, &f, angle, facing);
 	if (facing == FACING_RIGHT)
-		paintRect(res->getTexture(), texClip, sprRect);
+		AEUtil::paintRect(res->getTexture(), texClip, sprRect);
 	else
-		paintRect(res->getTexture(), getInversedRect(texClip, INVERSE_X), sprRect);
+		AEUtil::paintRect(res->getTexture(), AEUtil::getInversedRect(texClip, AEUtil::INVERSE_X), sprRect);
 	//if (showCrosshair)
 	//	paintCrosshair();
 }

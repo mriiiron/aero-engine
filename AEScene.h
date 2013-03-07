@@ -10,14 +10,12 @@ class AEScene {
 public:
 
 	AEScene();
-	GLvoid addBackground(AEBackground* _bg) { bg = _bg; }
+	GLvoid addBackground(AEBackground* _bg, GLfloat x, GLfloat y) { bg = _bg;  bg->setLocation(x, y); }
 	GLvoid addSpriteTable(AESpriteTable* _sTable) { sTable = _sTable; }
 	GLvoid addHUD(AEHeadUpDisplay* _hud) { hud = _hud; }
 	AEBackground* getBackground() { return bg; }
 	AESpriteTable* getSpriteTable() { return sTable; }
 	AEHeadUpDisplay* getHUD() { return hud; }
-	GLvoid run();
-	GLvoid stop();
 	GLvoid update();
 	GLvoid paint();
 
@@ -35,11 +33,18 @@ class AESceneManager {
 public:
 
 	static const GLint MAX_SCENE_NUM			= 20;
+	static const GLint SCENE_NONE				= -1;
 
-	GLvoid addAt(GLint index, AEScene* scene);
+	AESceneManager();
+	GLvoid addSceneAt(GLint index, AEScene* scene);
+	GLvoid stopAll();
+	GLvoid run(GLint index);
+	GLvoid update();
+	GLvoid paint();
 
 private:
 
 	AEScene* table[MAX_SCENE_NUM];
+	GLint activeSceneIndex;
 
 };

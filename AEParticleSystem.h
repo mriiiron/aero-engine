@@ -18,20 +18,14 @@
 #define PAINT_METHOD_HEXAGON		2
 #define PAINT_METHOD_OCTAGON		3
 
+
 class AEParticleEmitter;
 
+
 class AEParticle {
-private:
-	GLint enabled;
-	AEParticleEmitter* matrixEmit;
-	AEParticleEmitter* attachEmit;
-	GLfloat cx, cy, cz, vx, vy, vz, ax, ay, az;
-	GLfloat damping;
-	GLfloat angle, vrotate;
-	GLfloat r, g, b;
-	GLfloat life, fade;
-	GLint tex;
+
 public:
+
 	AEParticle();
 	GLvoid update();
 	GLvoid paint(GLint method = PAINT_METHOD_QUADRANGLE);
@@ -53,17 +47,25 @@ public:
 	GLvoid setTexture(GLint _tex) { tex = _tex; }
 	GLvoid setRGB(GLfloat _r, GLfloat _g, GLfloat _b) { r = _r;  g = _g;  b = _b; }
 	GLvoid setLife(GLfloat _life) { life = _life; }
+
+private:
+
+	GLint enabled;
+	AEParticleEmitter* matrixEmit;
+	AEParticleEmitter* attachEmit;
+	GLfloat cx, cy, cz, vx, vy, vz, ax, ay, az;
+	GLfloat damping;
+	GLfloat angle, vrotate;
+	GLfloat r, g, b;
+	GLfloat life, fade;
+	GLint tex;
+
 };
 
 class AEParticleEmitter {
-private:
-	GLint index;
-	AEParticle group[MAX_EMITTER_PARTICLES];
-	GLint type, mode;
-	GLint count;
-	GLfloat x, y, z;
-	GLint time, life;
+
 public:
+
 	AEParticleEmitter(GLint _type, GLint _mode, GLfloat _x, GLfloat _y, GLfloat _z = 0.0, GLint _count = 1, GLint _life = 100);
 	GLvoid update();
 	GLvoid paint();
@@ -76,23 +78,39 @@ public:
 	GLint getType() { return type; }
 	GLint getMode() { return mode; }
 	GLint getCount() { return count; }
+
+private:
+
+	GLint index;
+	AEParticle group[MAX_EMITTER_PARTICLES];
+	GLint type, mode;
+	GLint count;
+	GLfloat x, y, z;
+	GLint time, life;
+
 };
 
+
 class AEParticleSystem {
-private:
-	AEParticleEmitter* emitters[MAX_ONLINE_GENERATORS];
-	GLint occupied[MAX_ONLINE_GENERATORS];
-	GLint texTable[MAX_PARTICLE_TYPES];
-	GLint maxIndex;
+
 public:
+
 	AEParticleSystem();
-	GLint getTex(GLint index) { return texTable[index]; }
-	GLvoid loadTexture(GLint index, const char* fileName);
+	GLint getTexture(GLint index) { return texTable[index]; }
+	GLvoid setTexture(GLint index, GLint _tex) { texTable[index] = _tex; }
 	GLvoid generate(AEParticleEmitter* emitter);
 	GLvoid remove(GLint index);
 	GLvoid clear();
 	GLvoid update();
 	GLvoid paint();
+
+private:
+
+	AEParticleEmitter* emitters[MAX_ONLINE_GENERATORS];
+	GLint occupied[MAX_ONLINE_GENERATORS];
+	GLint texTable[MAX_PARTICLE_TYPES];
+	GLint maxIndex;
+
 };
 
 // ptclSys.generate(EFFECT_EXPLODE, x, y)

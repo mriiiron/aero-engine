@@ -7,7 +7,7 @@
 #include <GL\glut.h>
 #include "AEImageLoader.h"
 
-GLuint loadBMPTexture(const char* fileName) {
+GLuint AEImageLoader::loadBMPTexture(const char* fileName) {
 	GLint width, height, byteTotal;
 	GLubyte* pixels = 0;
 	GLuint texture = 0;
@@ -57,7 +57,7 @@ GLuint loadBMPTexture(const char* fileName) {
 	return texture;
 }
 
-GLubyte* loadMonochromeBMP(const char* fileName, GLint* pWidth, GLint* pHeight, GLint* pByteLine) {
+GLubyte* AEImageLoader::loadMonochromeBMP(const char* fileName, GLint* pWidth, GLint* pHeight, GLint* pByteLine) {
 	GLint dataStartPos, byteTotal;
 	GLubyte* pixels = 0;
 	FILE* pFile = fopen(fileName, "rb");
@@ -90,7 +90,7 @@ GLubyte* loadMonochromeBMP(const char* fileName, GLint* pWidth, GLint* pHeight, 
 	return pixels;
 }
 
-GLubyte* loadPNG(const char* fileName, GLint* pWidth, GLint* pHeight) {
+GLubyte* AEImageLoader::loadPNG(const char* fileName, GLint* pWidth, GLint* pHeight) {
 	FREE_IMAGE_FORMAT fifmt = FreeImage_GetFileType(fileName, 0);
 	FIBITMAP* dib = FreeImage_Load(fifmt, fileName, 0);
 	BYTE *pixels = (BYTE*)FreeImage_GetBits(dib);
@@ -99,7 +99,7 @@ GLubyte* loadPNG(const char* fileName, GLint* pWidth, GLint* pHeight) {
 	return pixels;
 }
 
-GLubyte* loadPNG(const char* fileName) {
+GLubyte* AEImageLoader::loadPNG(const char* fileName) {
 	FREE_IMAGE_FORMAT fifmt = FreeImage_GetFileType(fileName, 0);
 	FIBITMAP* dib = FreeImage_Load(fifmt, fileName, 0);
 	BYTE *pixels = (BYTE*)FreeImage_GetBits(dib);
@@ -107,7 +107,7 @@ GLubyte* loadPNG(const char* fileName) {
 }
 
 // Code From: http://hi.baidu.com/new/pro_lily
-GLuint loadPNGTexture(const char* fileName, GLint* pWidth, GLint* pHeight) {
+GLuint AEImageLoader::loadPNGTexture(const char* fileName, GLint* pWidth, GLint* pHeight) {
 	printf("from %s .. ", fileName);
 	GLuint texture;
 	FREE_IMAGE_FORMAT fifmt = FreeImage_GetFileType(fileName, 0);
@@ -136,7 +136,7 @@ GLuint loadPNGTexture(const char* fileName, GLint* pWidth, GLint* pHeight) {
 	return texture;
 }
 
-GLuint loadPNGTexture(const char* fileName) {
+GLuint AEImageLoader::loadPNGTexture(const char* fileName) {
 	printf("from %s .. ", fileName);
 	GLuint texture;
 	FREE_IMAGE_FORMAT fifmt = FreeImage_GetFileType(fileName, 0);

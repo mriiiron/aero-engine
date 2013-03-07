@@ -3,20 +3,18 @@
 #include <GL\glut.h>
 #include "AEUtility.h"
 
-char* context = NULL;
-
-GLint randomIntBetween(GLint start, GLint end) {
+GLint AEUtil::randomIntBetween(GLint start, GLint end) {
     return (rand() % (end - start + 1)) + start;
 }
 
-AEPoint createPoint(GLfloat _x, GLfloat _y) {
+AEPoint AEUtil::createPoint(GLfloat _x, GLfloat _y) {
 	AEPoint p;
 	p.x = _x;
 	p.y = _y;
 	return p;
 }
 
-AERect createRect(GLfloat _x1, GLfloat _y1, GLfloat _x2, GLfloat _y2) {
+AERect AEUtil::createRect(GLfloat _x1, GLfloat _y1, GLfloat _x2, GLfloat _y2) {
 	AERect r;
 	r.x1 = _x1;
 	r.y1 = _y1;
@@ -25,15 +23,15 @@ AERect createRect(GLfloat _x1, GLfloat _y1, GLfloat _x2, GLfloat _y2) {
 	return r;
 }
 
-AERect getInversedRect(AERect r, GLint direction) {
+AERect AEUtil::getInversedRect(AERect r, GLint direction) {
 	AERect ir;
-	if (direction == INVERSE_X) {
+	if (direction == AEUtil::INVERSE_X) {
 		ir.x1 = r.x2;
 		ir.y1 = r.y1;
 		ir.x2 = r.x1;
 		ir.y2 = r.y2;
 	}
-	else if (direction == INVERSE_Y) {
+	else if (direction == AEUtil::INVERSE_Y) {
 		ir.x1 = r.x1;
 		ir.y1 = r.y2;
 		ir.x2 = r.x2;
@@ -45,9 +43,9 @@ AERect getInversedRect(AERect r, GLint direction) {
 	return ir;
 }
 
-AEBiasRect getInversedRect(AEBiasRect r, GLint direction) {
+AEBiasRect AEUtil::getInversedRect(AEBiasRect r, GLint direction) {
 	AEBiasRect ir;
-	if (direction == INVERSE_X) {
+	if (direction == AEUtil::INVERSE_X) {
 		ir.x1 = r.x2;
 		ir.y1 = r.y2;
 		ir.x2 = r.x1;
@@ -57,7 +55,7 @@ AEBiasRect getInversedRect(AEBiasRect r, GLint direction) {
 		ir.x4 = r.x3;
 		ir.y4 = r.y3;
 	}
-	else if (direction == INVERSE_Y) {
+	else if (direction == AEUtil::INVERSE_Y) {
 		ir.x1 = r.x4;
 		ir.y1 = r.y4;
 		ir.x2 = r.x3;
@@ -73,7 +71,7 @@ AEBiasRect getInversedRect(AEBiasRect r, GLint direction) {
 	return ir;
 }
 
-GLvoid paintRect(GLint tex, AERect texClip, AERect paintArea) {
+GLvoid AEUtil::paintRect(GLint tex, AERect texClip, AERect paintArea) {
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glBegin(GL_QUADS);
 		glTexCoord2f(texClip.x1, texClip.y1);
@@ -87,7 +85,7 @@ GLvoid paintRect(GLint tex, AERect texClip, AERect paintArea) {
 	glEnd();
 }
 
-GLvoid paintRect(GLint tex, AERect texClip, AEBiasRect paintArea) {
+GLvoid AEUtil::paintRect(GLint tex, AERect texClip, AEBiasRect paintArea) {
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glBegin(GL_QUADS);
 		glTexCoord2f(texClip.x1, texClip.y1);
@@ -101,7 +99,7 @@ GLvoid paintRect(GLint tex, AERect texClip, AEBiasRect paintArea) {
 	glEnd();
 }
 
-GLvoid paintRectByCenter(GLint tex, AERect texClip, AEPoint center, GLfloat width, GLfloat height, GLfloat angleDeg) {
+GLvoid AEUtil::paintRectByCenter(GLint tex, AERect texClip, AEPoint center, GLfloat width, GLfloat height, GLfloat angleDeg) {
 	GLfloat angle = angleDeg / 180.0 * 3.14159;
 	GLfloat cosA = cos(angle), sinA = sin(angle);
 	GLfloat halfHeight = height * 0.5, halfWidth = width * 0.5;

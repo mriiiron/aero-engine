@@ -12,16 +12,6 @@ AEScene::AEScene() {
 	hud = NULL;
 }
 
-GLvoid AEScene::run() {
-	
-
-}
-
-GLvoid AEScene::stop() {
-
-
-}
-
 GLvoid AEScene::update() {
 	// ptclSys.update();
 	if (bg != NULL) {
@@ -64,9 +54,53 @@ GLvoid AEScene::paint() {
 	}
 }
 
-GLvoid AESceneManager::addAt(GLint index, AEScene* scene) {
+AESceneManager::AESceneManager() {
+	for (GLint i = 0; i < MAX_SCENE_NUM; i++) {
+		table[i] = NULL;
+	}
+	activeSceneIndex = SCENE_NONE;
+}
+
+GLvoid AESceneManager::addSceneAt(GLint index, AEScene* scene) {
 	if (index < 0 || index > MAX_SCENE_NUM || scene == NULL) {
 		// Error
+		return;
+	}
+	if (table[index] != NULL) {
+		// Error
+		return;
 	}
 	table[index] = scene;
+}
+
+GLvoid AESceneManager::stopAll() {
+	activeSceneIndex = SCENE_NONE;
+}
+
+GLvoid AESceneManager::run(GLint index) {
+	activeSceneIndex = index;
+}
+
+GLvoid AESceneManager::update() {
+	if (activeSceneIndex == SCENE_NONE) {
+		// Error;
+		return;
+	}
+	if (table[activeSceneIndex] == NULL) {
+		// Error;
+		return;
+	}
+	table[activeSceneIndex]->update();
+}
+
+GLvoid AESceneManager::paint() {
+	if (activeSceneIndex == SCENE_NONE) {
+		// Error;
+		return;
+	}
+	if (table[activeSceneIndex] == NULL) {
+		// Error;
+		return;
+	}
+	table[activeSceneIndex]->paint();
 }

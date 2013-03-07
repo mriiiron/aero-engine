@@ -13,7 +13,7 @@ AEParticle::AEParticle() {
 }
 
 GLvoid AEParticle::init() {
-	tex = ptclSys.getTex(0);
+	tex = ptclSys.getTexture(0);
 	cx = matrixEmit->getX();  cy = matrixEmit->getY();  cz = 0.0;
 	GLint alt;
 	GLfloat _v, _theta, _gamma;
@@ -29,14 +29,14 @@ GLvoid AEParticle::init() {
 		break;
 	case EMIT_TYPE_EXPLODE:
 		life = 1.0;  fade = 0.02;
-		_v = randomIntBetween(15, 20) / 1.0;
-		_theta = randomIntBetween(-45, 45) / 180.0 * 3.14159;
-		_gamma = randomIntBetween(-180, 179) / 180.0 * 3.14159;
+		_v = AEUtil::randomIntBetween(15, 20) / 1.0;
+		_theta = AEUtil::randomIntBetween(-45, 45) / 180.0 * 3.14159;
+		_gamma = AEUtil::randomIntBetween(-180, 179) / 180.0 * 3.14159;
 		vx = _v * cos(_theta) * cos(_gamma);
 		vy = _v * cos(_theta) * sin(_gamma);
 		vz = _v * sin(_theta) * sin(_gamma);
 		ax = ay = az = 0.0;
-		alt = randomIntBetween(0, 2);
+		alt = AEUtil::randomIntBetween(0, 2);
 		switch (alt) {
 		case 0: r = 1.0;  g = 0.2;  b = 0.2;  break;
 		case 1: r = 0.2;  g = 1.0;  b = 0.2;  break;
@@ -91,7 +91,7 @@ GLvoid AEParticle::paint(GLint method) {
 	switch (method) {
 	case PAINT_METHOD_TEXTURE:
 		glColor4f(r, g, b, alpha);
-		paintRectByCenter(tex, createRect(0.0, 0.0, 1.0, 1.0), createPoint(cx, cy), 16 * size, 16 * size, angle);
+		AEUtil::paintRectByCenter(tex, AEUtil::createRect(0.0, 0.0, 1.0, 1.0), AEUtil::createPoint(cx, cy), 16 * size, 16 * size, angle);
 		break;
 	case PAINT_METHOD_QUADRANGLE:
 		glDisable(GL_TEXTURE_2D);
@@ -107,7 +107,7 @@ GLvoid AEParticle::paint(GLint method) {
 		glEnd();
 		glEnable(GL_TEXTURE_2D);
 		glColor4f(1.0, 1.0, 1.0, alpha);
-		paintRectByCenter(tex, createRect(0.0, 0.0, 1.0, 1.0), createPoint(cx, cy), 8 * size, 8 * size, angle);
+		AEUtil::paintRectByCenter(tex, AEUtil::createRect(0.0, 0.0, 1.0, 1.0), AEUtil::createPoint(cx, cy), 8 * size, 8 * size, angle);
 		break;
 	case PAINT_METHOD_HEXAGON:
 
@@ -204,14 +204,6 @@ AEParticleSystem::AEParticleSystem() {
 		emitters[i] = NULL;
 		occupied[i] = 0;
 	}
-}
-
-GLvoid AEParticleSystem::loadTexture(GLint index, const char* fileName) {
-	if (index > MAX_PARTICLE_TYPES || index < 0) {
-		// Error
-		return;
-	}
-	texTable[index] = loadPNGTexture(fileName);
 }
 
 GLvoid AEParticleSystem::generate(AEParticleEmitter* emitter) {

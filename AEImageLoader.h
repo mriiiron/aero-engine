@@ -1,8 +1,15 @@
 #pragma once
 
-GLuint loadBMPTexture(const char* fileName);
-GLubyte* loadMonochromeBMP(const char* fileName, GLint* pWidth, GLint* pHeight, GLint* pByteLine);
-GLubyte* loadPNG(const char* fileName, GLint* pWidth, GLint* pHeight);
-GLubyte* loadPNG(const char* fileName);
-GLuint loadPNGTexture(const char* fileName, GLint* pWidth, GLint* pHeight);
-GLuint loadPNGTexture(const char* fileName);
+
+class AEImageLoader {
+
+public:
+
+	static GLuint loadBMPTexture(const char* fileName);
+	static GLubyte* loadMonochromeBMP(const char* fileName, GLint* pWidth, GLint* pHeight, GLint* pByteLine);
+	static GLubyte* loadPNG(const char* fileName, GLint* pWidth, GLint* pHeight);
+	static GLubyte* loadPNG(const char* fileName);
+	static GLuint loadPNGTexture(const char* fileName, GLint* pWidth, GLint* pHeight);
+	static GLuint loadPNGTexture(const char* fileName);
+
+};

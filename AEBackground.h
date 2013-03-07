@@ -81,8 +81,8 @@ class AEBackground {
 
 public:
 
-	static const GLint MAX_LAYERS				= 10;
-	static const GLint MAX_ANIMS				= 50;
+	static const GLint MAX_LAYER_COUNT			= 10;
+	static const GLint MAX_ANIM_COUNT			= 50;
 	static const GLint MAX_LANDFORMS			= 50;
 	static const GLint ONLANDFORM_TOLERANCE		= 2;
 
@@ -93,18 +93,21 @@ public:
 	Landform getLandform(GLint index) { return landforms[index]; }
 	GLvoid loadLandformsFromMonochrome(GLubyte* pixels, GLint width, GLint height, GLint byteLine);
 	GLvoid loadLandforms(GLubyte* pixels, GLint width, GLint height);
-	GLvoid loadFromFile(const char* fileName);
 	GLvoid addAnimAt(GLint index, AEBGLayerAnim layerAnim);
 	GLvoid update();
 	GLvoid paint(AEPoint cameraCenter);
 	AEPoint getLocation() { return location; }
 	GLint getWidth() { return width; }
 	GLint getHeight() { return height; }
+	GLint getLayerCount() { return layerCount; }
+	AEBGLayer* getLayer(GLint index) { return layer[index]; }
+	AEResourceTable* getBGResTable() { return &bgResTable; }
 	GLvoid setName(string _name) { name = _name; }
 	GLvoid setLocation(GLfloat _x, GLfloat _y) { location.x = _x;  location.y = _y; }
 	GLvoid setWidth(GLint _width) { width = _width; }
 	GLvoid setHeight(GLint _height) { height = _height; }
 	GLvoid setLayerCount(GLint _layerCount) { layerCount = _layerCount; }
+	GLvoid setLayer(GLint index, AEBGLayer* _layer) { layer[index] = _layer; }
 
 private:
 
@@ -112,10 +115,10 @@ private:
 	AEPoint location;
 	GLint width, height;
 	GLint layerCount, landformCount;
-	AEBGLayer* layer[MAX_LAYERS];
+	AEBGLayer* layer[MAX_LAYER_COUNT];
 	Landform landforms[MAX_LANDFORMS];
 	AEResourceTable bgResTable;
-	AEBGLayerAnim animTable[MAX_ANIMS];
+	AEBGLayerAnim animTable[MAX_ANIM_COUNT];
 
 };
 
@@ -129,6 +132,7 @@ public:
 
 	AEBackgroundLibrary();
 	GLvoid add(AEBackground* bg);
+	AEBackground* get(GLint index) { return lib[index]; }
 
 private:
 

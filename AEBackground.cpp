@@ -4,8 +4,8 @@
 #include <string>
 #include <GL\glut.h>
 #include "AESystemParam.h"
-#include "AEUtility.h"
 #include "AEImageLoader.h"
+#include "AEUtility.h"
 #include "AEBackground.h"
 
 extern char* context;
@@ -201,161 +201,8 @@ GLvoid AEBackground::loadLandforms(GLubyte* pixels, GLint width, GLint height) {
 	}
 }
 
-GLvoid AEBackground::loadFromFile(const char* fileName) {
-	std::ifstream fs(fileName);
-	char line[AESysParam::MAX_CHAR_COUNT_IN_LINE];
-	char* item;
-	GLint layerAdded = 0;
-	while (!fs.eof()) {
-		fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
-		switch (line[0]) {
-		case '%':
-			break;
-		case '#':
-			item = strtok_s(line, " ", &context);
-			if (strcmp(item, "#name") == 0) {
-				item = strtok_s(NULL, " ", &context);
-				setName(item);
-			}
-			else if (strcmp(item, "#layercount") == 0) {
-				item = strtok_s(NULL, " ", &context);
-				GLint layerCount = atoi(item);
-				if (layerCount > AEBackground::MAX_LAYERS) layerCount = AEBackground::MAX_LAYERS;
-				setLayerCount(layerCount);
-			}
-			else if (strcmp(item, "#landform") == 0) {
-				item = strtok_s(NULL, " ", &context);
-				GLint width, height;
-				GLubyte* landformData = loadPNG(item, &width, &height);
-				setWidth(width);  setHeight(height);
-				loadLandforms(landformData, width, height);
-			}
-			else if (strcmp(item, "#resources") == 0) {
-				fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
-				while (strcmp(line, "#endresources") != 0) {
-					AEResource* res = new AEResource();
-					item = strtok_s(line, " ", &context);  GLint rid = atoi(item);
-					item = strtok_s(NULL, " ", &context);
-					if (strcmp(item, "1x1") == 0) {
-						res->setType(RES_1x1);
-					}
-					else if (strcmp(item, "1x5") == 0) {
-						res->setType(RES_1x5);
-					}
-					else if (strcmp(item, "2x5") == 0) {
-						res->setType(RES_2x5);
-					}
-					else if (strcmp(item, "5x10") == 0) {
-						res->setType(RES_5x10);
-					}
-					// else if ...
-					else {
-						printf("Error: Resource format code error.\n");
-						return;
-					}
-					item = strtok_s(NULL, " ", &context);  res->setCellWidth(atoi(item));
-					item = strtok_s(NULL, " ", &context);  res->setCellHeight(atoi(item));
-					item = strtok_s(NULL, " ", &context);  res->setTexture(loadPNGTexture(item));
-					bgResTable.addAt(rid, res);
-					fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
-				}
-			}
-			else if (strcmp(item, "#anim") == 0) {
-				AEBGLayerAnim lAnim;
-				item = strtok_s(NULL, " ", &context);  GLint animIndex = atoi(item);
-				fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
-				item = strtok_s(line, " ", &context);
-				if (strcmp(item, "#framecount") == 0) {
-					item = strtok_s(NULL, " ", &context);  lAnim.setFrameCount(atoi(item));
-				}
-				else {
-					// Error
-				}
-				fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
-				GLint frameNum = 0, endTime = 0;
-				while (strcmp(line, "#endanim") != 0) {
-					item = strtok_s(line, " ", &context);  GLint rid = atoi(item);
-					item = strtok_s(NULL, " ", &context);  GLint offset = atoi(item);
-					item = strtok_s(NULL, " ", &context);  endTime += atoi(item);
-					lAnim.setFrameImage(frameNum, rid, offset, bgResTable.get(rid)->getCellWidth(), bgResTable.get(rid)->getCellHeight());
-					lAnim.setEndTime(frameNum, endTime);
-					frameNum++;
-					fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
-				}
-				addAnimAt(animIndex, lAnim);
-			}
-			else if (strcmp(item, "#layer") == 0) {
-				if (layerAdded == layerCount)
-					break;
-				item = strtok_s(NULL, " ", &context);  GLint lyr_width = atoi(item);
-				item = strtok_s(NULL, " ", &context);  GLint lyr_height = atoi(item);
-				GLint rid, depth = 0;
-				GLfloat offsetx = 0.0, offsety = 0.0;
-				item = strtok_s(NULL, " ", &context);
-				while (strcmp(item, "end:") != 0) {
-					if (strcmp(item, "depth:") == 0) {
-						item = strtok_s(NULL, " ", &context);  depth = atoi(item);
-					}
-					else if (strcmp(item, "offsetx:") == 0) {
-						item = strtok_s(NULL, " ", &context);  offsetx = GLfloat(atoi(item));
-					}
-					else if (strcmp(item, "offsety:") == 0) {
-						item = strtok_s(NULL, " ", &context);  offsety = GLfloat(atoi(item));
-					}
-					// else if ..
-					item = strtok_s(NULL, " ", &context);
-				}
-				fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
-				item = strtok_s(line, " ", &context);
-				if (strcmp(item, "#res") == 0) {
-					item = strtok_s(NULL, " ", &context);  rid = atoi(item);
-				}
-				else {
-					// Error
-				}
-				AEBGLayer* newLayer = new AEBGLayer(rid, depth, lyr_width, lyr_height, offsetx, offsety);
-				fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
-				while (strcmp(line, "#endlayer") != 0) {
-					item = strtok_s(line, " ", &context);
-					if (strcmp(item, "$animref") == 0) {
-						AnimRef ref;
-						ref.time = ref.frame = 0;
-						item = strtok_s(NULL, " ", &context);  ref.animIndex = atoi(item);
-						item = strtok_s(NULL, " ", &context);  ref.x = atoi(item);
-						item = strtok_s(NULL, " ", &context);  ref.y = atoi(item);
-						newLayer->addAnimRef(ref);
-					}
-					else {
-						// Error
-					}
-					fs.getline(line, AESysParam::MAX_CHAR_COUNT_IN_LINE);
-				}
-				GLubyte inserted = 0;
-				for (GLint i = 0; i < layerAdded; i++) {
-					if (newLayer->getDepth() < layer[i]->getDepth()) {
-						for (GLint j = layerAdded - 1; j >= i; j--) {
-							layer[j + 1] = layer[j];
-						}
-						layer[i] = newLayer;
-						inserted = 1;
-						break;
-					}
-				}
-				if (!inserted) {
-					layer[layerAdded] = newLayer;
-				}
-				layerAdded++;
-			}
-			break;
-		default:
-			break;
-		}
-	}
-	fs.close();
-}
-
 GLvoid AEBackground::addAnimAt(GLint index, AEBGLayerAnim layerAnim) {
-	if (index < AEBackground::MAX_ANIMS && index >= 0) {
+	if (index < AEBackground::MAX_ANIM_COUNT && index >= 0) {
 		animTable[index] = layerAnim;
 	}
 }
@@ -390,7 +237,7 @@ GLvoid AEBackground::paint(AEPoint cameraCenter) {
 		texClip.x2 = texClip.x1 + 1.0 * AESysParam::SCREEN_WIDTH / layer[i]->getWidth();
 		texClip.y1 = (cameraRect.y1 - location.y - layer[i]->getOffsetPosition().y) / layer[i]->getHeight();
 		texClip.y2 = texClip.y1 + 1.0 * AESysParam::SCREEN_HEIGHT / layer[i]->getHeight();
-		paintRect(bgResTable.get(layer[i]->getLayerRid())->getTexture(), texClip, cameraRect);
+		AEUtil::paintRect(bgResTable.get(layer[i]->getLayerRid())->getTexture(), texClip, cameraRect);
 		for (GLint j = 0; j < layer[i]->getAnimCount(); j++) {
 			AnimRef ref = layer[i]->getAnimRef(j);
 			AEBGLayerAnim lanim = animTable[ref.animIndex];
@@ -401,7 +248,7 @@ GLvoid AEBackground::paint(AEPoint cameraCenter) {
 			animRect.x2 = animRect.x1 + lf.width;
 			animRect.y1 = location.y + layer[i]->getOffsetPosition().y + ref.y;
 			animRect.y2 = animRect.y1 + lf.height;
-			paintRect(bgResTable.get(lf.rid)->getTexture(), res->getTexCoords(lf.imgOffset, 1), animRect);
+			AEUtil::paintRect(bgResTable.get(lf.rid)->getTexture(), res->getTexCoords(lf.imgOffset, 1), animRect);
 		}
 	}
 }
