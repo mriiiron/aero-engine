@@ -2,6 +2,7 @@
 #include "AESystemParam.h"
 #include "AEUtility.h"
 #include "AECamera.h"
+#include "AEKeyboard.h"
 #include "AEScene.h"
 
 extern AECamera camera;
@@ -79,28 +80,4 @@ GLvoid AESceneManager::stopAll() {
 
 GLvoid AESceneManager::run(GLint index) {
 	activeSceneIndex = index;
-}
-
-GLvoid AESceneManager::update() {
-	if (activeSceneIndex == SCENE_NONE) {
-		// Error;
-		return;
-	}
-	if (table[activeSceneIndex] == NULL) {
-		// Error;
-		return;
-	}
-	table[activeSceneIndex]->update();
-}
-
-GLvoid AESceneManager::paint() {
-	if (activeSceneIndex == SCENE_NONE) {
-		// Error;
-		return;
-	}
-	if (table[activeSceneIndex] == NULL) {
-		// Error;
-		return;
-	}
-	table[activeSceneIndex]->paint();
 }

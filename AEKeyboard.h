@@ -1,5 +1,6 @@
 #pragma once
 
+
 class AEKeyboardHandler {
 
 public:
@@ -28,9 +29,6 @@ public:
 	static const GLint INPUT_6A					= 10;
 	static const GLint INPUT_236A				= 11;
 	static const GLint INPUT_8D					= 12;
-
-	static void keyDown(unsigned char key);
-	static void keyUp(unsigned char key);
 
 private:
 

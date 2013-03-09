@@ -8,8 +8,6 @@
 #include "AEUtility.h"
 #include "AEBackground.h"
 
-extern char* context;
-
 AEBGLayer::AEBGLayer(GLint _rid, GLint _depth, GLint _width, GLint _height, GLfloat _offsetx, GLfloat _offsety) {
 	rid = _rid;  depth = _depth;  width = _width;  height = _height;
 	offsetPosition.x = _offsetx;  offsetPosition.y = _offsety;

@@ -19,6 +19,8 @@ public:
 	GLvoid update();
 	GLvoid paint();
 
+	virtual GLvoid keyDown(GLubyte key, int x, int y) = 0;
+
 private:
 
 	AEBackground* bg;
@@ -39,8 +41,7 @@ public:
 	GLvoid addSceneAt(GLint index, AEScene* scene);
 	GLvoid stopAll();
 	GLvoid run(GLint index);
-	GLvoid update();
-	GLvoid paint();
+	AEScene* getActiveScene() { return table[activeSceneIndex]; }
 
 private:
 

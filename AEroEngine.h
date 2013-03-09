@@ -1,3 +1,5 @@
+#pragma once
+
 #include "AEImageLoader.h"
 #include "AEUtility.h"
 #include "AESystemParam.h"
@@ -19,11 +21,3 @@
 #include "AECollision.h"
 #include "AEScene.h"
 #include "AEAI.h"
-
-AEResourceTable rTable;
-AEObjectTable oTable;
-AEBackgroundLibrary bgLib;
-AEFontLibrary fontLib;
-AEParticleSystem ptclSys;
-AESceneManager sceneManager;
-AECamera camera;

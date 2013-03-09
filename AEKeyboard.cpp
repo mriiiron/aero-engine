@@ -2,14 +2,6 @@
 #include "AESystemParam.h"
 #include "AEKeyboard.h"
 
-GLvoid AEKeyboardHandler::keyDown(unsigned char key) {
-
-}
-
-GLvoid AEKeyboardHandler::keyUp(unsigned char key) {
-
-}
-
 //GLvoid onKeyDown(unsigned char key, int x, int y) {
 //	switch (AESysParam::gameState) {
 //	case GAME_STATE_TITLE:
