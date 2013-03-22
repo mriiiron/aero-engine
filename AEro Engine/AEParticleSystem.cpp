@@ -2,7 +2,6 @@
 #include <GL\glut.h>
 #include <math.h>
 #include "AEUtility.h"
-#include "AEImageLoader.h"
 #include "AEParticleSystem.h"
 
 extern AEParticleSystem ptclSys;

@@ -78,6 +78,6 @@ GLvoid AESceneManager::stopAll() {
 	activeSceneIndex = SCENE_NONE;
 }
 
-GLvoid AESceneManager::run(GLint index) {
+GLvoid AESceneManager::runScene(GLint index) {
 	activeSceneIndex = index;
 }

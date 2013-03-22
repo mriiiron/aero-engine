@@ -7,11 +7,9 @@ typedef enum _ResType {
 } ResType;
 
 class AEResource {
-private:
-	GLint tex;
-	ResType type;
-	GLint cellW, cellH;
+
 public:
+
 	GLvoid setCellWidth(GLint _cellW) { cellW = _cellW; }
 	GLvoid setCellHeight(GLint _cellH) { cellH = _cellH; }
 	GLvoid setTexture(GLint _tex) { tex = _tex; }
@@ -20,7 +18,15 @@ public:
 	GLint getCellWidth() { return cellW; }
 	GLint getCellHeight() { return cellH; }
 	AERect getTexCoords(GLint imgOffset, GLint imgCells);
+
+private:
+	
+	GLint tex;
+	ResType type;
+	GLint cellW, cellH;
+
 };
+
 
 class AEResourceTable {
 

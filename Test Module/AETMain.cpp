@@ -47,7 +47,8 @@ GLvoid gameInit() {
 GLvoid createTestWorld() {
 	AEScene* testTitleScene = new AETTitleScene();
 	AEHeadUpDisplay* titleHud = new AEHeadUpDisplay();
-	titleHud->addText(200, 400, 0, string("AEro: a ero engine."));
+	titleHud->addText(220, 100, 0, string("-- PRESS START --"));
+	titleHud->addImage(320, 240, rTable.get(0), 0);
 	testTitleScene->addHUD(titleHud);
 	sceneManager.addSceneAt(0, testTitleScene);
 	AEScene* testScene = new AETMainScene();

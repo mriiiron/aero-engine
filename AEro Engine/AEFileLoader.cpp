@@ -288,10 +288,10 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 				iss >> item;  obj->setType(stoi(item));
 			}
 			else if (item == "#action") {
-				Animation newAnim;
+				AEAnimation* newAnim = new AEAnimation;
 				iss >> item;  GLint animIndex = stoi(item);
-				iss >> item;  newAnim.setName(item);
-				iss >> item;  newAnim.setState(stoi(item));
+				iss >> item;  newAnim->setName(item);
+				iss >> item;  newAnim->setState(stoi(item));
 				getline(fs, line);  iss.clear();  iss.str(line);
 				iss >> item;
 				if (item == "#framecount") {
@@ -301,30 +301,30 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 					if (item == "loop") {		
 						loop = 1;
 						iss >> item;  GLint ttl = stoi(item);
-						newAnim.setTTL(ttl);
+						newAnim->setTTL(ttl);
 						if (ttl != -1) {
 							getline(fs, line);  iss.clear();  iss.str(line);
 							iss >> item;
 							if (item == "#loopover") {
-								iss >> item;  newAnim.setNext(stoi(item));
+								iss >> item;  newAnim->setNext(stoi(item));
 							}
 							else {
 								// Error
 							}
 						}
 						else {
-							newAnim.setNext(-1);
+							newAnim->setNext(-1);
 						}
 					}
 					else if (item == "next") {
 						loop = 0;
 						iss >> item;
-						newAnim.setNext(stoi(item));
+						newAnim->setNext(stoi(item));
 					}
 					else {
 						// Error
 					}
-					newAnim.init(count, loop);
+					newAnim->init(count, loop);
 				}
 				else {
 					// Error
@@ -337,7 +337,7 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 						iss >> item;  GLint rptTimes = stoi(item);
 						GLint srcIndex = frameNum - 1;
 						for (GLint i = 1; i < rptTimes; i++) {
-							newAnim.cloneFrame(srcIndex, srcIndex + i);
+							newAnim->cloneFrame(srcIndex, srcIndex + i);
 						}
 						frameNum += (rptTimes - 1);
 						getline(fs, line);  iss.clear();  iss.str(line);
@@ -346,31 +346,31 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 					GLint rid = stoi(item);
 					iss >> item;  GLint offset = stoi(item);
 					iss >> item;  GLint cells = stoi(item);
-					newAnim.setFrameImage(frameNum, rid, offset, cells);
+					newAnim->setFrameImage(frameNum, rid, offset, cells);
 					iss >> item;  GLint centerx = stoi(item);
 					iss >> item;  GLint centery = stoi(item);
-					newAnim.setFrameCenter(frameNum, centerx, centery);
+					newAnim->setFrameCenter(frameNum, centerx, centery);
 					iss >> item;  endTime += stoi(item);
-					newAnim.setEndTime(frameNum, endTime);
-					newAnim.setShiftx(frameNum, 0);  newAnim.setShifty(frameNum, 0);
-					newAnim.setDvx(frameNum, 0);  newAnim.setDvy(frameNum, 0);
-					newAnim.setRotate(frameNum, 0);
+					newAnim->setEndTime(frameNum, endTime);
+					newAnim->setShiftx(frameNum, 0);  newAnim->setShifty(frameNum, 0);
+					newAnim->setDvx(frameNum, 0);  newAnim->setDvy(frameNum, 0);
+					newAnim->setRotate(frameNum, 0);
 					iss >> item;
 					while (item != "end:") {
 						if (item == "shiftx:") {
-							iss >> item;  newAnim.setShiftx(frameNum, stoi(item));
+							iss >> item;  newAnim->setShiftx(frameNum, stoi(item));
 						}
 						else if (item == "shifty:") {
-							iss >> item;  newAnim.setShifty(frameNum, stoi(item));
+							iss >> item;  newAnim->setShifty(frameNum, stoi(item));
 						}
 						else if (item == "dvx:") {
-							iss >> item;  newAnim.setDvx(frameNum, stoi(item));
+							iss >> item;  newAnim->setDvx(frameNum, stoi(item));
 						}
 						else if (item == "dvy:") {
-							iss >> item;  newAnim.setDvy(frameNum, stoi(item));
+							iss >> item;  newAnim->setDvy(frameNum, stoi(item));
 						}
 						else if (item == "rotate:") {
-							iss >> item;  newAnim.setRotate(frameNum, stoi(item));
+							iss >> item;  newAnim->setRotate(frameNum, stoi(item));
 						}
 						// else if ..
 						iss >> item;
@@ -384,7 +384,7 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 							iss >> item;  action = stoi(item);
 							iss >> item;  castx = stoi(item);
 							iss >> item;  casty = stoi(item);
-							newAnim.setCast(frameNum, oid, action, castx, casty);
+							newAnim->setCast(frameNum, oid, action, castx, casty);
 						}
 						else if (item == "$attack") {
 							GLint atkType, blockedTo, blownOffTo, damage, x1, y1, x2, y2, effect = 0, angle = 0, force = 0;
@@ -410,7 +410,7 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 								// else if ..
 								iss >> item;
 							}
-							newAnim.setAttack(frameNum, atkType, blockedTo, blownOffTo, damage, force, x1, y1, x2, y2, effect, angle);
+							newAnim->setAttack(frameNum, atkType, blockedTo, blownOffTo, damage, force, x1, y1, x2, y2, effect, angle);
 						}
 						else if (item == "$body") {
 							GLint bdyType, x1, y1, x2, y2;
@@ -419,38 +419,38 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 							iss >> item;  y1 = stoi(item);
 							iss >> item;  x2 = stoi(item);
 							iss >> item;  y2 = stoi(item);
-							newAnim.setBody(frameNum, bdyType, x1, y1, x2, y2);
+							newAnim->setBody(frameNum, bdyType, x1, y1, x2, y2);
 						}
 						else if (item == "$block") {
 							GLint blockType, blockTo, breakTo;
 							iss >> item;  blockType = stoi(item);
 							iss >> item;  blockTo = stoi(item);
 							iss >> item;  breakTo = stoi(item);
-							newAnim.setBlock(frameNum, blockType, blockTo, breakTo);
+							newAnim->setBlock(frameNum, blockType, blockTo, breakTo);
 						}
 						else if (item == "$hold") {
 							iss >> item;
-							newAnim.setHoldKey(frameNum, AEObject::keyStrToByte(item));
+							newAnim->setHoldKey(frameNum, AEObject::keyStrToByte(item));
 						}
 						else if (item == "$jumpto") {
 							GLbyte input;  GLint action;
 							iss >> item;  action = stoi(item);
 							iss >> item;  input = AEObject::keyStrToInputCode(item);
-							newAnim.setJump(frameNum, action, input);
+							newAnim->setJump(frameNum, action, input);
 						}
 						else if (item == "$keyrelease") {
 							GLbyte key;  GLint action;
 							iss >> item;  action = stoi(item);
 							iss >> item;
 							key = AEObject::keyStrToByte(item);
-							newAnim.setKeyRelease(frameNum, key, action);
+							newAnim->setKeyRelease(frameNum, key, action);
 						}
 						// Else if ..
 						getline(fs, line);  iss.clear();  iss.str(line);
 					}
 					frameNum++;
 				}
-				if (frameNum != newAnim.getFrameCount()) {
+				if (frameNum != newAnim->getFrameCount()) {
 					// Error
 				}
 				obj->addAnimToSlot(animIndex, newAnim);

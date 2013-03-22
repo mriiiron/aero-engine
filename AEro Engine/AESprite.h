@@ -99,7 +99,7 @@ public:
 	string getObjName();
 	GLvoid changeAction(GLint _action);
 	GLvoid update();
-	GLvoid toNextFrame(Animation anim);
+	GLvoid toNextFrame(AEAnimation anim);
 	GLvoid paintShadow();
 	GLvoid paintCrosshair();
 	GLvoid paint();

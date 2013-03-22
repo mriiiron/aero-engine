@@ -79,17 +79,17 @@ GLvoid AESprite::changeAction(GLint _action) {
 		return;
 	}
 	action = _action;
-	Animation anim = oTable.get(oid)->getAnim(action);
-	state = anim.getState();
-	timeToLive = anim.getTTL();
+	AEAnimation* anim = oTable.get(oid)->getAnim(action);
+	state = anim->getState();
+	timeToLive = anim->getTTL();
 	frame = time = 0;
 	if (state >= AEObject::STATE_CHAR_ACTION) {
-		GLint dvx = anim.getFrame(frame).dvx;
+		GLint dvx = anim->getFrame(frame).dvx;
 		if (dvx == 999)
 			vx = 0;
 		else
 			vx += dvx;
-		GLint dvy = anim.getFrame(frame).dvy;
+		GLint dvy = anim->getFrame(frame).dvy;
 		if (dvy == 999)
 			vy = 0;
 		else
@@ -98,8 +98,8 @@ GLvoid AESprite::changeAction(GLint _action) {
 	else { 
 		ax = vx = ay = vy = 0.0;
 	}
-	if (anim.getFrame(frame).cast != NULL) {
-		Frame f = anim.getFrame(frame);
+	if (anim->getFrame(frame).cast != NULL) {
+		Frame f = anim->getFrame(frame);
 		AEPoint castPoint = calcRotatedPoint(cx, cy, &f, angle, facing);
 		if (facing == 0)
 			scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
@@ -311,9 +311,9 @@ GLvoid AESprite::update() {
 		timeToStiff--;
 		return;
 	}
-	Animation anim = oTable.get(oid)->getAnim(action);
+	AEAnimation* anim = oTable.get(oid)->getAnim(action);
 	if (timeToLive == 0) {
-		changeAction(anim.getNext());
+		changeAction(anim->getNext());
 		return;
 	}
 	if (timeToLive > 0) timeToLive--;
@@ -419,8 +419,8 @@ GLvoid AESprite::update() {
 			}
 		}
 	}
-	JumpParas* jump = anim.getFrame(frame).jumpTo;
-	KeyReleaseParas* release = anim.getFrame(frame).keyRelease;
+	JumpParas* jump = anim->getFrame(frame).jumpTo;
+	KeyReleaseParas* release = anim->getFrame(frame).keyRelease;
 	if (jump != NULL) {
 		for (GLint input = 0; input < AEKeyboardHandler::INPUT_COUNT; input++) {
 			if (jump->action[input] > 0 && inputStateJudge(input)) {
@@ -434,51 +434,51 @@ GLvoid AESprite::update() {
 		return;
 	}
 	time++;
-	if (time >= anim.getEndTime(frame)) {
+	if (time >= anim->getEndTime(frame)) {
 		unlockAtkJudge();
-		cx += (fac * anim.getFrame(frame).shiftx);
-		cy += anim.getFrame(frame).shifty;
+		cx += (fac * anim->getFrame(frame).shiftx);
+		cy += anim->getFrame(frame).shifty;
 		if (state <= AEObject::STATE_CHAR_INAIR) {
 			cy = bg->getLocation().y + bg->getLandform(onLandform).data[bg->getXonBG(GLint(cx))].altitude;
 		}
-		angle += anim.getFrame(frame).rotate;
-		HoldParas* hold = anim.getFrame(frame).hold;
+		angle += anim->getFrame(frame).rotate;
+		HoldParas* hold = anim->getFrame(frame).hold;
 		if (hold != NULL && isKeyDown(hold->key) > 0) {
 			if (frame == 0)
 				time = 0;
 			else
-				time = anim.getEndTime(frame - 1);
+				time = anim->getEndTime(frame - 1);
 		}	
 		else {
 			frame++;
-			if (time >= anim.getEndTime(anim.getFrameCount() - 1)) {
+			if (time >= anim->getEndTime(anim->getFrameCount() - 1)) {
 				time = 0;
 			}
-			if (frame == anim.getFrameCount()) {
+			if (frame == anim->getFrameCount()) {
 				frame = 0;
-				if (!anim.isLoop()) {
-					changeAction(anim.getNext());
+				if (!anim->isLoop()) {
+					changeAction(anim->getNext());
 					return;
 				}
 			}
 			if (state >= AEObject::STATE_CHAR_ACTION) {
 				if (state < AEObject::STATE_CHAR_INAIR) {
-					GLint dvx = anim.getFrame(frame).dvx;
+					GLint dvx = anim->getFrame(frame).dvx;
 					if (dvx == 999)
 						gndSpeed = 0;
 					else
 						gndSpeed += dvx;
 				}
 				else {
-					GLint dvx = anim.getFrame(frame).dvx;
+					GLint dvx = anim->getFrame(frame).dvx;
 					if (dvx == 999)
 						vx = 0;
 					else
 						vx += dvx;
 				}
 			}
-			if (anim.getFrame(frame).cast != NULL) {
-				Frame f = anim.getFrame(frame);
+			if (anim->getFrame(frame).cast != NULL) {
+				Frame f = anim->getFrame(frame);
 				AEPoint castPoint = calcRotatedPoint(cx, cy, &f, angle, facing);
 				if (facing == 0)
 					scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
@@ -491,7 +491,7 @@ GLvoid AESprite::update() {
 }
 
 GLvoid AESprite::paintShadow() {
-	AEResource* shadow = rTable.get(0);
+	AEResource* shadow = rTable.get(101);
 	AERect shadowRect = AEUtil::createRect(cx - shadow->getCellWidth() / 2, cy - drop - shadow->getCellHeight() / 2, cx + shadow->getCellWidth() / 2, cy - drop + shadow->getCellHeight() / 2);
 	AEUtil::paintRect(shadow->getTexture(), AEUtil::createRect(0.0, 0.0, 1.0, 1.0), shadowRect);
 }
@@ -507,7 +507,7 @@ GLvoid AESprite::paint() {
 	AEObject* obj = oTable.get(oid);
 	if (obj->getType() < 1)
 		paintShadow();
-	Frame f = obj->getAnim(action).getFrame(frame);
+	Frame f = obj->getAnim(action)->getFrame(frame);
 	AEResource* res = rTable.get(f.rid);
 	AERect texClip = res->getTexCoords(f.imgOffset, f.imgCells);
 	AEBiasRect sprRect = calcRotatedRect(cx, cy, &f, angle, facing);
@@ -590,14 +590,14 @@ GLvoid AESpriteTable::clear() {
 GLvoid AESpriteTable::handleCollisions() {
 	for (GLint i = 0; i < pHash - 1; i++) {
 		AESprite* s1 = table[hash[i]];
-		Frame f1 = oTable.get(s1->getOid())->getAnim(s1->getAction()).getFrame(s1->getFrame());
+		Frame f1 = oTable.get(s1->getOid())->getAnim(s1->getAction())->getFrame(s1->getFrame());
 		AEPoint sparkPos, bloodPos;
 		if (!(s1->isAtkJudgeLocked()) && f1.attack != NULL) {
 			for (GLint j = i + 1; j < pHash; j++) {
 				AESprite* s2 = table[hash[j]];
 				if (s1->getTeam() == s2->getTeam())
 					continue;
-				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction()).getFrame(s2->getFrame());
+				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction())->getFrame(s2->getFrame());
 				if (f2.body != NULL && AECollision::check(s1, s2, &f1, &f2, &sparkPos, &bloodPos)) {
 					AECollision::handle(s1, s2, &f1, &f2, sparkPos, bloodPos);
 				}
@@ -608,7 +608,7 @@ GLvoid AESpriteTable::handleCollisions() {
 				AESprite* s2 = table[hash[j]];
 				if (s2->isAtkJudgeLocked() || s1->getTeam() == s2->getTeam())
 					continue;
-				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction()).getFrame(s2->getFrame());
+				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction())->getFrame(s2->getFrame());
 				if (f2.attack != NULL && AECollision::check(s2, s1, &f2, &f1, &sparkPos, &bloodPos)) {
 					AECollision::handle(s2, s1, &f2, &f1, sparkPos, bloodPos);
 				}

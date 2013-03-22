@@ -4,7 +4,6 @@
 #include <string>
 #include <GL\glut.h>
 #include "AESystemParam.h"
-#include "AEImageLoader.h"
 #include "AEUtility.h"
 #include "AEBackground.h"
 

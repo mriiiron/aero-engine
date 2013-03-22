@@ -40,7 +40,7 @@ public:
 	AESceneManager();
 	GLvoid addSceneAt(GLint index, AEScene* scene);
 	GLvoid stopAll();
-	GLvoid run(GLint index);
+	GLvoid runScene(GLint index);
 	AEScene* getActiveScene() { return table[activeSceneIndex]; }
 
 private:

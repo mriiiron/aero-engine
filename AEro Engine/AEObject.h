@@ -1,5 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 /*******************************************************************
 == File Info ==
 Name:				objects.h
@@ -103,11 +101,11 @@ typedef struct _Frame {
 } Frame;
 
 // Animation Class: Arranges what and how frames should be displayed.
-class Animation {
+class AEAnimation {
 
 public:
 
-	Animation();
+	AEAnimation();
 	GLvoid setFrameImage(GLint index, GLint _rid, GLint _offset, GLint _cells);
 	GLvoid setFrameCenter(GLint index, GLint _centerx, GLint _centery);
 	GLvoid cloneFrame(GLint srcIndex, GLint dstIndex);
@@ -220,7 +218,7 @@ public:
 	static GLbyte keyStrToByte(string keyStr);
 	static GLbyte keyStrToInputCode(string keyStr);
 
-	GLvoid addAnimToSlot(GLint slot, Animation _anim) { anim[slot] = _anim; }
+	GLvoid addAnimToSlot(GLint slot, AEAnimation* _anim) { anim[slot] = _anim; }
 	GLvoid setOid(GLint _oid) { oid = _oid; }
 	GLvoid setName(string _name) { name = _name; }
 	GLvoid setType(GLint _type) {
@@ -230,7 +228,7 @@ public:
 		default: break;
 		}
 	}
-	Animation getAnim(GLint index) { return anim[index]; }
+	AEAnimation* getAnim(GLint index) { return anim[index]; }
 	ObjType getType() { return otype; }
 	string getName() { return name; }
 
@@ -238,7 +236,7 @@ private:
 
 	GLint oid;
 	string name;
-	Animation anim[MAX_OBJECT_ACTIONS];
+	AEAnimation* anim[MAX_OBJECT_ACTIONS];
 	ObjType otype;
 
 };
