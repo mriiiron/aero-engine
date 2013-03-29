@@ -1,0 +1,18 @@
+% Head info
+
+#name Common_Objects
+#type 99
+
+% Actions definition
+
+#action 0 spark_0 1001
+#framecount 8 next 1000
+90 0 1 32 32 1 end:
+90 1 1 32 32 1 end:
+90 2 1 32 32 1 end:
+90 3 1 32 32 1 end:
+90 4 1 32 32 1 end:
+90 5 1 32 32 1 end:
+90 6 1 32 32 1 end:
+90 7 1 32 32 1 end:
+#endaction

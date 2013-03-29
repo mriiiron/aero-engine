@@ -25,11 +25,6 @@ GLvoid AEScene::update() {
 		hud->update();
 	}
 	//camera->update();
-	//AESysParam::aiTimer--;
-	//if (AESysParam::aiTimer == 0) {
-	//	aTable->update();
-	//	AESysParam::aiTimer = AEAI::EXEC_INTERVAL;
-	//}
 }
 
 GLvoid AEScene::paint() {

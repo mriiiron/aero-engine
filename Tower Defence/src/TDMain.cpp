@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <windows.h>
-#include <string>
 #include <time.h>
 #include <GL\glut.h>
 #include "AEroEngine.h"
 
-#include "AETScene.h"
+#include "TDMainScene.h"
 
 using namespace std;
 
@@ -18,6 +17,7 @@ extern AEFontLibrary fontLib;
 extern AEParticleSystem ptclSys;
 extern AESceneManager sceneManager;
 extern AECamera camera;
+extern AEAITable aiTable;
 
 GLint showCrosshair = 0;
 
@@ -44,19 +44,10 @@ GLvoid gameInit() {
 	AEFileLoader::loadObjectTable("res\\objects.txt");
 }
 
-GLvoid createTestWorld() {
-	AEScene* testTitleScene = new AETTitleScene();
-	AEHeadUpDisplay* titleHud = new AEHeadUpDisplay();
-	titleHud->addText(220, 100, 0, string("-- PRESS START --"));
-	titleHud->addImage(320, 240, rTable.get(0), 0);
-	testTitleScene->addHUD(titleHud);
-	sceneManager.addSceneAt(0, testTitleScene);
-	AEScene* testScene = new AETMainScene();
-	AEHeadUpDisplay* hud = new AEHeadUpDisplay();
-	hud->addText(100, 150, 0, string("fuck world"));
-	testScene->addHUD(hud);
-	testScene->addBackground(bgLib.get(0), -600.0, -220.0);
-	sceneManager.addSceneAt(1, testScene);
+GLvoid makeWorld() {
+	TDMainScene* mainScene = new TDMainScene();
+	mainScene->init();
+	sceneManager.addSceneAt(0, mainScene);
 	sceneManager.runScene(0);
 }
 
@@ -84,6 +75,11 @@ DWORD time1, time2;
 
 GLvoid updateScene() {
 	sceneManager.getActiveScene()->update();
+	AESysParam::aiTimer--;
+	if (AESysParam::aiTimer <= 0) {
+		aiTable.update();
+		AESysParam::aiTimer = AEAI::EXEC_INTERVAL;
+	}
 }
 
 GLvoid onDisplay() {
@@ -130,7 +126,7 @@ int main(int argc, char* argv[]) {
 	// glutSpecialUpFunc(&onSpecialKeyUp);
 	glInit();
 	gameInit();
-	createTestWorld();
+	makeWorld();
 	time1 = GetTickCount();
 	glutMainLoop();
 	return 0;

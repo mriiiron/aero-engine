@@ -16,19 +16,34 @@
 extern AEResourceTable rTable;
 extern AEObjectTable oTable;
 
-AESprite::AESprite(AEScene* scene, GLint _oid, GLint _team, GLfloat _cx, GLfloat _cy, GLint _action, GLint inverse) {
+AESprite::AESprite(AEScene* _scene, GLint _oid, GLint _team, GLfloat _cx, GLfloat _cy, GLint _action, GLint inverse) {
 	oid = _oid;  team = _team;  cx = _cx;  cy = _cy;
-	vx = vy = ax = ay = gndSpeed = 0.0;
-	frame = time = facing = angle = timeToStiff = keyState = atkJudgeLock = 0;
-	onLandform = scene->getBackground()->getLandformIndexBelow(GLint(cx), GLint(cy), &drop);
+	scene = _scene;
+	vx = vy = ax = ay = angle = vangle = gndSpeed = 0.0;
+	frame = time = facing = timeToStiff = keyState = atkJudgeLock = 0;
+	onLandform = _scene->getBackground()->getLandformIndexBelow(GLint(cx), GLint(cy), &drop);
 	hpValue = hpMax = 100;
 	for (int i = 0; i < AEKeyboardHandler::INPUT_COUNT; i++) inputState[i] = 0;
 	if (inverse) turnOver();
 	changeAction(_action);
 }
 
-AEPoint AESprite::calcRotatedPoint(GLfloat cx, GLfloat cy, Frame* f, GLint angleDeg, GLbyte facing) {
-	GLfloat angle = angleDeg * 3.14159 / 180.0;
+AEVector2 AESprite::getFaceVector() {
+	if (angle == 3.14159265f / 2) {
+		return AEVector2(0.0f, 1.0f);
+	}
+	else if (angle == -3.14159265f / 2) {
+		return AEVector2(0.0f, -1.0f);
+	}
+	else if (angle > -3.14159265f / 2 && angle < 3.14159265f / 2) {
+		return AEVector2(1.0f, tan(angle));
+	}
+	else {
+		return AEVector2(-1.0f, -tan(angle));
+	}
+}
+
+AEPoint AESprite::calcRotatedPoint(GLfloat cx, GLfloat cy, Frame* f, GLfloat angle, GLbyte facing) {
 	GLfloat cosA = cos(angle), sinA = sin(angle);
 	AEPoint point;
 	if (facing == FACING_RIGHT) {
@@ -42,8 +57,7 @@ AEPoint AESprite::calcRotatedPoint(GLfloat cx, GLfloat cy, Frame* f, GLint angle
 	return point;
 }
 
-AEBiasRect AESprite::calcRotatedRect(GLfloat cx, GLfloat cy, Frame* f, GLint angleDeg, GLbyte facing) {
-	GLfloat angle = angleDeg * 3.14159 / 180.0;
+AEBiasRect AESprite::calcRotatedRect(GLfloat cx, GLfloat cy, Frame* f, GLfloat angle, GLbyte facing) {
 	GLfloat cosA = cos(angle), sinA = sin(angle);
 	AEBiasRect bRect;
 	if (facing == FACING_RIGHT) {
@@ -302,193 +316,227 @@ GLvoid AESprite::testKeyState() {
 }
 
 GLvoid AESprite::update() {
-	AEBackground* bg = scene->getBackground();
-	for (int i = 0; i < AEKeyboardHandler::INPUT_COUNT; i++) {
-		if (inputState[i] > 0)
-			inputState[i]--;
-	}
-	if (timeToStiff > 0) {
-		timeToStiff--;
-		return;
-	}
 	AEAnimation* anim = oTable.get(oid)->getAnim(action);
 	if (timeToLive == 0) {
 		changeAction(anim->getNext());
 		return;
 	}
 	if (timeToLive > 0) timeToLive--;
-	GLint fac;
-	if (facing) fac = -1; else fac = 1;
+	GLint fac = facing ? -1 : 1;
 	cx += (fac * vx);
 	cy += vy;
 	vx += ax;
 	vy += ay;
-	angle = angle % 360;
-	if (state < 1000) {
-		if (state >= AEObject::STATE_CHAR_INAIR) {
-			if (drop + vy <= 0) {
-				drop = 0;
-				cy = bg->getLocation().y + bg->getLandform(onLandform).data[bg->getXonBG(GLint(cx))].altitude;
-				if (state == AEObject::STATE_CHAR_INAIR) {
-					changeAction(AEObject::ACT_CHAR_LANDING);
-					vy = ay = 0.0;
-				}
-				else if (state == AEObject::STATE_CHAR_FALLING) {
-					if (abs(vy) >= AEPhysics::CHAR_REBOUND_SPEED) {
-						changeAction(AEObject::ACT_CHAR_FALL_REBOUND);
-						vy = 2.0;
-						ay = AEPhysics::GRAVITY;
-					}
-					else {
-						changeAction(AEObject::ACT_CHAR_LYING);
-						vy = ay = 0.0;
-					}
-				}
-				else if (state == AEObject::STATE_CHAR_FALLING_R) {
-					changeAction(AEObject::ACT_CHAR_LYING);
-					vy = ay = 0.0;
-				}
-			}
-			else {
-				onLandform = bg->getLandformIndexBelow(GLint(cx), GLint(cy), &drop);
-				if (state == AEObject::STATE_CHAR_FALLING) {
-					if (abs(vx) > 0.1) {
-						GLfloat slope = -vy / vx;
-						if (slope > tan(75 * 3.14159 / 180)) {
-							changeAction(AEObject::ACT_CHAR_FALL_90);
-						}
-						else if (slope > tan(45 * 3.14159 / 180)) {
-							changeAction(AEObject::ACT_CHAR_FALL_60);
-						}
-						else if (slope > tan(15 * 3.14159 / 180)) {
-							changeAction(AEObject::ACT_CHAR_FALL_30);
-						}
-						else if (slope > tan(-15 * 3.14159 / 180)) {
-							changeAction(AEObject::ACT_CHAR_FALL_0);
-						}
-						else {
-							changeAction(AEObject::ACT_CHAR_FALL_DROP);
-						}
-					}
-					else {
-						if (vy > 0.373) {
-							changeAction(AEObject::ACT_CHAR_FALL_90);
-						}
-						else if (vy > 0.100) {
-							changeAction(AEObject::ACT_CHAR_FALL_60);
-						}
-						else if (vy > 0.027) {
-							changeAction(AEObject::ACT_CHAR_FALL_30);
-						}
-						else if (vy > -0.027) {
-							changeAction(AEObject::ACT_CHAR_FALL_0);
-						}
-						else {
-							changeAction(AEObject::ACT_CHAR_FALL_DROP);
-						}
-					}
-					ay = AEPhysics::GRAVITY;
-				}
-			}
+	angle += vangle;
+	if (angle < -3.14159265f) angle += 2 * 3.14159265f;
+	if (angle > 3.14159265f) angle -= 2 * 3.14159265f;
+	time++;
+	if (time >= anim->getEndTime(frame)) {
+		cx += (fac * anim->getFrame(frame).shiftx);
+		cy += anim->getFrame(frame).shifty;
+		frame++;
+		if (time >= anim->getEndTime(anim->getFrameCount() - 1)) {
+			time = 0;
 		}
-		else {
-			GLint lastLandform = onLandform;
-			onLandform = bg->getLandformIndexBelow(GLint(cx), GLint(cy), &drop);
-			if (abs(drop) <= AEBackground::ONLANDFORM_TOLERANCE) {
-				drop = 0;
-				cy = bg->getLocation().y + bg->getLandform(onLandform).data[bg->getXonBG(GLint(cx))].altitude;
-				if (state >= AEObject::STATE_CHAR_ACTION) {
-					if (gndSpeed != 0.0) {
-						ax = AEPhysics::RESISTANCE_GROUND;
-						if (gndSpeed * ax > 0) ax = -ax;
-						GLfloat newSpeed = gndSpeed + ax;
-						if (newSpeed * gndSpeed <= 0) {
-							ax = newSpeed = 0.0;
-						}
-						gndSpeed = newSpeed;
-					}
-				}
-				GLfloat slope = bg->getLandform(onLandform).data[bg->getXonBG(GLint(cx))].slope;
-				GLfloat string = sqrt(1.0 + slope * slope);
-				vx = gndSpeed * 1.0 / string;
-				vy = gndSpeed * fac * slope / string;
-			}
-			else {
-				changeAction(AEObject::ACT_CHAR_INAIR);
-				ay = AEPhysics::GRAVITY;
-			}
-		}
-	}
-	JumpParas* jump = anim->getFrame(frame).jumpTo;
-	KeyReleaseParas* release = anim->getFrame(frame).keyRelease;
-	if (jump != NULL) {
-		for (GLint input = 0; input < AEKeyboardHandler::INPUT_COUNT; input++) {
-			if (jump->action[input] > 0 && inputStateJudge(input)) {
-				changeAction(jump->action[input]);
+		if (frame == anim->getFrameCount()) {
+			frame = 0;
+			if (!anim->isLoop()) {
+				changeAction(anim->getNext());
 				return;
 			}
 		}
 	}
-	if (release != NULL && (!isKeyDown(release->key))) {
-		changeAction(release->action);
-		return;
-	}
-	time++;
-	if (time >= anim->getEndTime(frame)) {
-		unlockAtkJudge();
-		cx += (fac * anim->getFrame(frame).shiftx);
-		cy += anim->getFrame(frame).shifty;
-		if (state <= AEObject::STATE_CHAR_INAIR) {
-			cy = bg->getLocation().y + bg->getLandform(onLandform).data[bg->getXonBG(GLint(cx))].altitude;
-		}
-		angle += anim->getFrame(frame).rotate;
-		HoldParas* hold = anim->getFrame(frame).hold;
-		if (hold != NULL && isKeyDown(hold->key) > 0) {
-			if (frame == 0)
-				time = 0;
-			else
-				time = anim->getEndTime(frame - 1);
-		}	
-		else {
-			frame++;
-			if (time >= anim->getEndTime(anim->getFrameCount() - 1)) {
-				time = 0;
-			}
-			if (frame == anim->getFrameCount()) {
-				frame = 0;
-				if (!anim->isLoop()) {
-					changeAction(anim->getNext());
-					return;
-				}
-			}
-			if (state >= AEObject::STATE_CHAR_ACTION) {
-				if (state < AEObject::STATE_CHAR_INAIR) {
-					GLint dvx = anim->getFrame(frame).dvx;
-					if (dvx == 999)
-						gndSpeed = 0;
-					else
-						gndSpeed += dvx;
-				}
-				else {
-					GLint dvx = anim->getFrame(frame).dvx;
-					if (dvx == 999)
-						vx = 0;
-					else
-						vx += dvx;
-				}
-			}
-			if (anim->getFrame(frame).cast != NULL) {
-				Frame f = anim->getFrame(frame);
-				AEPoint castPoint = calcRotatedPoint(cx, cy, &f, angle, facing);
-				if (facing == 0)
-					scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
-				else
-					scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
-			}
-		}
-	}
-	testKeyState();
 }
+
+//GLvoid AESprite::updateSample() {
+//	AEBackground* bg = scene->getBackground();
+//	for (int i = 0; i < AEKeyboardHandler::INPUT_COUNT; i++) {
+//		if (inputState[i] > 0)
+//			inputState[i]--;
+//	}
+//	if (timeToStiff > 0) {
+//		timeToStiff--;
+//		return;
+//	}
+//	AEAnimation* anim = oTable.get(oid)->getAnim(action);
+//	if (timeToLive == 0) {
+//		changeAction(anim->getNext());
+//		return;
+//	}
+//	if (timeToLive > 0) timeToLive--;
+//	GLint fac;
+//	if (facing) fac = -1; else fac = 1;
+//	cx += (fac * vx);
+//	cy += vy;
+//	vx += ax;
+//	vy += ay;
+//	if (angle < -3.14159265f) angle += 2 * 3.14159265f;
+//	if (angle > 3.14159265f) angle -= 2 * 3.14159265f;
+//	if (state < 1000) {
+//		if (state >= AEObject::STATE_CHAR_INAIR) {
+//			if (drop + vy <= 0) {
+//				drop = 0;
+//				cy = bg->getLocation().y + bg->getLandform(onLandform).data[bg->getXonBG(GLint(cx))].altitude;
+//				if (state == AEObject::STATE_CHAR_INAIR) {
+//					changeAction(AEObject::ACT_CHAR_LANDING);
+//					vy = ay = 0.0;
+//				}
+//				else if (state == AEObject::STATE_CHAR_FALLING) {
+//					if (abs(vy) >= AEPhysics::CHAR_REBOUND_SPEED) {
+//						changeAction(AEObject::ACT_CHAR_FALL_REBOUND);
+//						vy = 2.0;
+//						ay = AEPhysics::GRAVITY;
+//					}
+//					else {
+//						changeAction(AEObject::ACT_CHAR_LYING);
+//						vy = ay = 0.0;
+//					}
+//				}
+//				else if (state == AEObject::STATE_CHAR_FALLING_R) {
+//					changeAction(AEObject::ACT_CHAR_LYING);
+//					vy = ay = 0.0;
+//				}
+//			}
+//			else {
+//				onLandform = bg->getLandformIndexBelow(GLint(cx), GLint(cy), &drop);
+//				if (state == AEObject::STATE_CHAR_FALLING) {
+//					if (abs(vx) > 0.1) {
+//						GLfloat slope = -vy / vx;
+//						if (slope > tan(75 * 3.14159 / 180)) {
+//							changeAction(AEObject::ACT_CHAR_FALL_90);
+//						}
+//						else if (slope > tan(45 * 3.14159 / 180)) {
+//							changeAction(AEObject::ACT_CHAR_FALL_60);
+//						}
+//						else if (slope > tan(15 * 3.14159 / 180)) {
+//							changeAction(AEObject::ACT_CHAR_FALL_30);
+//						}
+//						else if (slope > tan(-15 * 3.14159 / 180)) {
+//							changeAction(AEObject::ACT_CHAR_FALL_0);
+//						}
+//						else {
+//							changeAction(AEObject::ACT_CHAR_FALL_DROP);
+//						}
+//					}
+//					else {
+//						if (vy > 0.373) {
+//							changeAction(AEObject::ACT_CHAR_FALL_90);
+//						}
+//						else if (vy > 0.100) {
+//							changeAction(AEObject::ACT_CHAR_FALL_60);
+//						}
+//						else if (vy > 0.027) {
+//							changeAction(AEObject::ACT_CHAR_FALL_30);
+//						}
+//						else if (vy > -0.027) {
+//							changeAction(AEObject::ACT_CHAR_FALL_0);
+//						}
+//						else {
+//							changeAction(AEObject::ACT_CHAR_FALL_DROP);
+//						}
+//					}
+//					ay = AEPhysics::GRAVITY;
+//				}
+//			}
+//		}
+//		else {
+//			GLint lastLandform = onLandform;
+//			onLandform = bg->getLandformIndexBelow(GLint(cx), GLint(cy), &drop);
+//			if (abs(drop) <= AEBackground::ONLANDFORM_TOLERANCE) {
+//				drop = 0;
+//				cy = bg->getLocation().y + bg->getLandform(onLandform).data[bg->getXonBG(GLint(cx))].altitude;
+//				if (state >= AEObject::STATE_CHAR_ACTION) {
+//					if (gndSpeed != 0.0) {
+//						ax = AEPhysics::RESISTANCE_GROUND;
+//						if (gndSpeed * ax > 0) ax = -ax;
+//						GLfloat newSpeed = gndSpeed + ax;
+//						if (newSpeed * gndSpeed <= 0) {
+//							ax = newSpeed = 0.0;
+//						}
+//						gndSpeed = newSpeed;
+//					}
+//				}
+//				GLfloat slope = bg->getLandform(onLandform).data[bg->getXonBG(GLint(cx))].slope;
+//				GLfloat string = sqrt(1.0 + slope * slope);
+//				vx = gndSpeed * 1.0 / string;
+//				vy = gndSpeed * fac * slope / string;
+//			}
+//			else {
+//				changeAction(AEObject::ACT_CHAR_INAIR);
+//				ay = AEPhysics::GRAVITY;
+//			}
+//		}
+//	}
+//	JumpParas* jump = anim->getFrame(frame).jumpTo;
+//	KeyReleaseParas* release = anim->getFrame(frame).keyRelease;
+//	if (jump != NULL) {
+//		for (GLint input = 0; input < AEKeyboardHandler::INPUT_COUNT; input++) {
+//			if (jump->action[input] > 0 && inputStateJudge(input)) {
+//				changeAction(jump->action[input]);
+//				return;
+//			}
+//		}
+//	}
+//	if (release != NULL && (!isKeyDown(release->key))) {
+//		changeAction(release->action);
+//		return;
+//	}
+//	time++;
+//	if (time >= anim->getEndTime(frame)) {
+//		unlockAtkJudge();
+//		cx += (fac * anim->getFrame(frame).shiftx);
+//		cy += anim->getFrame(frame).shifty;
+//		if (state <= AEObject::STATE_CHAR_INAIR) {
+//			cy = bg->getLocation().y + bg->getLandform(onLandform).data[bg->getXonBG(GLint(cx))].altitude;
+//		}
+//		angle += AEUtil::deg2rad(anim->getFrame(frame).rotate);
+//		HoldParas* hold = anim->getFrame(frame).hold;
+//		if (hold != NULL && isKeyDown(hold->key) > 0) {
+//			if (frame == 0)
+//				time = 0;
+//			else
+//				time = anim->getEndTime(frame - 1);
+//		}	
+//		else {
+//			frame++;
+//			if (time >= anim->getEndTime(anim->getFrameCount() - 1)) {
+//				time = 0;
+//			}
+//			if (frame == anim->getFrameCount()) {
+//				frame = 0;
+//				if (!anim->isLoop()) {
+//					changeAction(anim->getNext());
+//					return;
+//				}
+//			}
+//			if (state >= AEObject::STATE_CHAR_ACTION) {
+//				if (state < AEObject::STATE_CHAR_INAIR) {
+//					GLint dvx = anim->getFrame(frame).dvx;
+//					if (dvx == 999)
+//						gndSpeed = 0;
+//					else
+//						gndSpeed += dvx;
+//				}
+//				else {
+//					GLint dvx = anim->getFrame(frame).dvx;
+//					if (dvx == 999)
+//						vx = 0;
+//					else
+//						vx += dvx;
+//				}
+//			}
+//			if (anim->getFrame(frame).cast != NULL) {
+//				Frame f = anim->getFrame(frame);
+//				AEPoint castPoint = calcRotatedPoint(cx, cy, &f, angle, facing);
+//				if (facing == 0)
+//					scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
+//				else
+//					scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
+//			}
+//		}
+//	}
+//	testKeyState();
+//}
 
 GLvoid AESprite::paintShadow() {
 	AEResource* shadow = rTable.get(101);
@@ -591,15 +639,16 @@ GLvoid AESpriteTable::handleCollisions() {
 	for (GLint i = 0; i < pHash - 1; i++) {
 		AESprite* s1 = table[hash[i]];
 		Frame f1 = oTable.get(s1->getOid())->getAnim(s1->getAction())->getFrame(s1->getFrame());
-		AEPoint sparkPos, bloodPos;
 		if (!(s1->isAtkJudgeLocked()) && f1.attack != NULL) {
 			for (GLint j = i + 1; j < pHash; j++) {
 				AESprite* s2 = table[hash[j]];
 				if (s1->getTeam() == s2->getTeam())
 					continue;
 				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction())->getFrame(s2->getFrame());
-				if (f2.body != NULL && AECollision::check(s1, s2, &f1, &f2, &sparkPos, &bloodPos)) {
-					AECollision::handle(s1, s2, &f1, &f2, sparkPos, bloodPos);
+				if (f2.body != NULL) {
+					AECollisionResult cr = AECollision::check(s1, s2, &f1, &f2);
+					if (cr.type != AECollisionResult::TYPE_NONE)
+						AECollision::handle(s1, s2, &f1, &f2, cr.point);
 				}
 			}
 		}
@@ -609,8 +658,10 @@ GLvoid AESpriteTable::handleCollisions() {
 				if (s2->isAtkJudgeLocked() || s1->getTeam() == s2->getTeam())
 					continue;
 				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction())->getFrame(s2->getFrame());
-				if (f2.attack != NULL && AECollision::check(s2, s1, &f2, &f1, &sparkPos, &bloodPos)) {
-					AECollision::handle(s2, s1, &f2, &f1, sparkPos, bloodPos);
+				if (f2.attack != NULL) {
+					AECollisionResult cr = AECollision::check(s2, s1, &f2, &f1);
+					if (cr.type != AECollisionResult::TYPE_NONE)
+						AECollision::handle(s2, s1, &f2, &f1, cr.point);
 				}
 			}
 		}

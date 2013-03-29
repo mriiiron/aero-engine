@@ -1,0 +1,21 @@
+#resource
+0 1x1 600 250 res\aero.png
+1 1x1 128 128 res\flag\alliance.png
+2 1x1 128 128 res\flag\horde.png
+3 1x5 99 39 res\turret\turret_0.png
+4 1x5 89 43 res\tank\tank_0.png
+90 2x5 65 65 res\common\spark\spark_0.png
+100 1x1 21 21 res\common\crosshair.png
+101 1x1 53 9 res\common\shadow.png
+#resource_end
+
+#font
+Courier_New 10 16 res\common\font\Courier_New.png
+#font_end
+
+#bg
+res\common\bg\battlefield\bg.txt
+#bg_end
+
+#ptcl
+#ptcl_end

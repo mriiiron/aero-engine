@@ -1,6 +1,6 @@
 /*******************************************************************
 == File Info ==
-Name:				sprite.h
+Name:				AESprite.h
 Author:				CaiyZ (Mr.IroN)
 
 == File Comment ==
@@ -33,15 +33,18 @@ public:
 	static const GLint FACING_RIGHT				= 0;
 	static const GLint FACING_LEFT				= 1;
 
-	AESprite(AEScene* scene, GLint _oid, GLint _team, GLfloat _cx, GLfloat _cy, GLint _action = 0, GLint inverse = 0);
+	AESprite(AEScene* _scene, GLint _oid, GLint _team, GLfloat _cx, GLfloat _cy, GLint _action = 0, GLint inverse = 0);
 	GLvoid setIndex(GLint _index) { index = _index; }
 	GLvoid setState(GLint _state) { state = _state; }
 	GLvoid setAx(GLfloat _ax) { ax = _ax; }
 	GLvoid setAy(GLfloat _ay) { ay = _ay; }
-	GLvoid setVx(GLfloat _vx) { vx = _vx; }
+	GLvoid setVx(GLfloat _vx) { vy = _vx; }
 	GLvoid setVy(GLfloat _vy) { vy = _vy; }
+	GLvoid setVAngle(GLfloat _vangle) { vangle = _vangle; }
 	GLvoid setGroundSpeed(GLfloat _speed) { gndSpeed = _speed; }
-	GLvoid setAngle(GLint _angle) { angle = _angle; }
+	GLvoid setAngle(GLfloat _angle) { angle = _angle; }
+	GLvoid rotateDeg(GLfloat degree) { angle += AEUtil::deg2rad(degree); }
+	GLvoid rotateRad(GLfloat rad) { angle += rad; }
 	GLvoid setFacing(GLint _facing) { facing = _facing; }
 	GLvoid turnOver() { facing = 1 - facing; }
 	GLvoid resetKeys() { keyState = 0; }
@@ -64,12 +67,15 @@ public:
 	GLint getGroundSpeed() { return gndSpeed; }
 	GLfloat getCx() { return cx; }
 	GLfloat getCy() { return cy; }
+	AEPoint getCenter() { return AEUtil::createPoint(cx, cy); }
 	GLfloat getVx() { return vx; }
 	GLfloat getVy() { return vy; }
+	GLfloat getAngle() { return angle; }
+	AEVector2 getFaceVector();
 	GLbyte inputStateJudge(GLint _input);
 	GLint log2(GLint key);
-	AEPoint calcRotatedPoint(GLfloat cx, GLfloat cy, Frame* f, GLint angleDeg, GLbyte facing);
-	AEBiasRect calcRotatedRect(GLfloat cx, GLfloat cy, Frame* f, GLint angleDeg, GLbyte facing);
+	AEPoint calcRotatedPoint(GLfloat cx, GLfloat cy, Frame* f, GLfloat angle, GLbyte facing);
+	AEBiasRect calcRotatedRect(GLfloat cx, GLfloat cy, Frame* f, GLfloat angle, GLbyte facing);
 	/* CHARACTER ONLY */
 	GLint getKeyState() { return keyState; }
 	GLint getHP() { return hpValue; }
@@ -98,17 +104,18 @@ public:
 	/* END AI ONLY */
 	string getObjName();
 	GLvoid changeAction(GLint _action);
-	GLvoid update();
 	GLvoid toNextFrame(AEAnimation anim);
 	GLvoid paintShadow();
 	GLvoid paintCrosshair();
 	GLvoid paint();
 
-private:
+	virtual GLvoid update();
+
+protected:
 
 	GLint index, oid, action, frame, time, timeToLive, timeToStiff;
-	GLfloat cx, cy, vx, vy, ax, ay, gndSpeed;
-	GLint state, team, keyState, angle, drop, onLandform;
+	GLfloat cx, cy, vx, vy, ax, ay, angle, vangle, gndSpeed;
+	GLint state, team, keyState, drop, onLandform;
 	GLbyte facing, atkJudgeLock;
 	GLint hpValue, hpMax;
 	GLbyte inputState[AEKeyboardHandler::INPUT_COUNT];

@@ -1,0 +1,20 @@
+% Head info
+
+#name Turret
+#type 1
+
+% Actions definition
+
+#action 0 idle 1000
+#framecount 1 loop -1
+3 0 1 20 20 2 end:
+#endaction
+
+#action 1 fire 1001
+#framecount 4 loop -1
+3 1 1 20 20 2 end:
+$attack 0 0 0 4 0 0 0 0 end:
+3 2 1 20 20 2 end:
+3 3 1 20 20 2 end:
+3 4 1 20 20 2 end:
+#endaction

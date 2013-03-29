@@ -1,0 +1,4 @@
+1 flag
+2 turret
+3 tank
+99 common

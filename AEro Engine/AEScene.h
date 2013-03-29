@@ -21,7 +21,7 @@ public:
 
 	virtual GLvoid keyDown(GLubyte key, int x, int y) = 0;
 
-private:
+protected:
 
 	AEBackground* bg;
 	AESpriteTable* sTable;

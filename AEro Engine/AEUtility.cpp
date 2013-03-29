@@ -1,26 +1,26 @@
-#include <stdlib.h>
-#include <math.h>
 #include <GL\glut.h>
 #include "AEUtility.h"
 
-GLint AEUtil::randomIntBetween(GLint start, GLint end) {
-    return (rand() % (end - start + 1)) + start;
+AEVector2 AEVector2::normalize(AEVector2 v) {
+	return AEVector2(v.x / v.model(), v.y / v.model());
 }
 
-AEPoint AEUtil::createPoint(GLfloat _x, GLfloat _y) {
-	AEPoint p;
-	p.x = _x;
-	p.y = _y;
-	return p;
+GLfloat AEVector2::cross(AEVector2 v1, AEVector2 v2) {
+	return v1.x * v2.y - v1.y * v2.x;
 }
 
-AERect AEUtil::createRect(GLfloat _x1, GLfloat _y1, GLfloat _x2, GLfloat _y2) {
-	AERect r;
-	r.x1 = _x1;
-	r.y1 = _y1;
-	r.x2 = _x2;
-	r.y2 = _y2;
-	return r;
+GLfloat AEVector2::dotProduct(AEVector2 v1, AEVector2 v2) {
+	return v1.x * v2.x + v1.y * v2.y;
+}
+
+GLfloat AEVector2::angleBetween(AEVector2 v1, AEVector2 v2) {
+	GLfloat angleValue = acos(AEVector2::dotProduct(v1, v2) / (v1.model() * v2.model()));
+	if (AEVector2::cross(v1, v2) > 0) {
+		return angleValue;
+	}
+	else {
+		return -angleValue;
+	}
 }
 
 AERect AEUtil::getInversedRect(AERect r, GLint direction) {

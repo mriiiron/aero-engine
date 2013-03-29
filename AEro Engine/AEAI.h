@@ -6,13 +6,7 @@ public:
 
 	static const GLint EXEC_INTERVAL			= 3;
 
-	static const GLint TYPE_NONE				= 0;
-	static const GLint TYPE_SWORDMAN			= 1;
-	static const GLint TYPE_GUARD				= 2;
-	static const GLint TYPE_SWORDMAN_TRAINER	= 3;
-
-	AEAI(GLint _type, AESprite* _self);
-	GLvoid execute();
+	AEAI(AESprite* _self);
 	GLvoid releaseAllKeys();
 	GLvoid setTarget(AESprite* _target) { target = _target; }
 	GLvoid enable() { enabled = GL_TRUE; }
@@ -22,12 +16,14 @@ public:
 	GLint checkdistXWith(AESprite* sp) { return abs(self->getCx() - sp->getCx()); }
 	GLint checkdistYWith(AESprite* sp) { return abs(self->getCy() - sp->getCy()); }
 
-private:
+	virtual GLvoid execute() = 0;
+
+protected:
 
 	AESprite* self;
 	AESprite* target;
 	GLboolean enabled;
-	GLint index, type;
+	GLint index;
 
 };
 
@@ -36,7 +32,6 @@ class AEAITable {
 public:
 
 	static const GLint MAX_ONLINE_AIS = 120;
-	static const GLint AI_COUNT = 5;
 
 	AEAITable();
 	AEAI* get(GLint index) { return table[index]; }

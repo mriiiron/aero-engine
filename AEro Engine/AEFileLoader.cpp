@@ -22,7 +22,7 @@ extern AEParticleSystem ptclSys;
 GLvoid AEFileLoader::loadBackground(AEBackground* bg, string bgDataFileName) {
 	ifstream fs(bgDataFileName);
 	if (fs.fail()) {
-		cout << "Failed: Cannot open \"maindata.txt\"." << endl;
+		cout << "Failed: Cannot open \"bg.txt\"." << endl;
 		return;
 	}
 	string line, item;

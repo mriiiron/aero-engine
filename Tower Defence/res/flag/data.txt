@@ -1,0 +1,16 @@
+% Head info
+
+#name Flag
+#type 1
+
+% Actions definition
+
+#action 0 alliance 1001
+#framecount 1 loop -1
+1 0 1 64 8 2 end:
+#endaction
+
+#action 1 horde 1001
+#framecount 1 loop -1
+2 0 1 64 8 2 end:
+#endaction

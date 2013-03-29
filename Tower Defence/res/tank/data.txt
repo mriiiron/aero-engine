@@ -1,0 +1,29 @@
+% Head info
+
+#name Tank
+#type 1
+
+% Actions definition
+
+#action 0 idle 1001
+#framecount 1 loop -1
+4 0 1 36 22 2 end:
+#endaction
+
+#action 1 move_start 1001
+#framecount 1 next 2
+4 0 1 36 22 1 dvx: 1 end:
+#endaction
+
+#action 2 move_loop 1001
+#framecount 4 loop -1
+4 3 1 36 22 2 end:
+4 2 1 36 22 2 end:
+4 1 1 36 22 2 end:
+4 0 1 36 22 2 end:
+#endaction
+
+#action 10 destroyed 1002
+#framecount 1 next 1000
+4 0 1 36 22 30 dvx: 999 end:
+#endaction

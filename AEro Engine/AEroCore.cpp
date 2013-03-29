@@ -9,3 +9,4 @@ AEFontLibrary fontLib;
 AEParticleSystem ptclSys;
 AESceneManager sceneManager;
 AECamera camera;
+AEAITable aiTable;

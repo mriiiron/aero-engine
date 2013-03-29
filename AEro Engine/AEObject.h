@@ -1,6 +1,6 @@
 /*******************************************************************
 == File Info ==
-Name:				objects.h
+Name:				AEObjects.h
 Author:				CaiyZ (Mr.IroN)
 
 == File Comment ==
@@ -80,6 +80,7 @@ typedef struct _KeyReleaseParas {
 	GLbyte key;
 	GLint action;
 } KeyReleaseParas;
+
 
 // FRAME: The component parts of Animation.
 // - RID: The frame's image should be fetched from which Resource (see "resources.h").

@@ -1,0 +1,15 @@
+% Head info
+
+#name Battle_Field
+#layercount 0
+#landform res\common\bg\battlefield\landform.png
+
+% Resources
+
+#resources
+#endresources
+
+% Layer animation definitions
+
+% Layers definition
+
