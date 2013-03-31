@@ -1,3 +1,12 @@
+/**
+ * @file	AEPhysics.h
+ * @brief	To specify the physics constants.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 

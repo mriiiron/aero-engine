@@ -1,9 +1,19 @@
+/**
+ * @file	AECamera.h
+ * @brief	Defining the control of camera.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 #define CAM_CHASE_DIST			200.0
 #define CAM_CHASE_SPEED			0.05
 
 #include "AESprite.h"
+
 
 class AECamera {
 

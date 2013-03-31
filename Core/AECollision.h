@@ -1,3 +1,12 @@
+/**
+ * @file	AECollision.h
+ * @brief	Defining the handling of collisions.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 

@@ -1,3 +1,12 @@
+/**
+ * @file	AESystemParam.h
+ * @brief	To specify the system parameters used in the engine.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 class AESysParam {

@@ -1,3 +1,12 @@
+/**
+ * @file	AEParticleSystem.h
+ * @brief	Implementing AEro's particle system.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 #define NULL						0

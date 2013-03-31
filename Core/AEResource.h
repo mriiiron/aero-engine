@@ -1,6 +1,16 @@
+/**
+ * @file	AEResource.h
+ * @brief	Defining the resources being used.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 #include "AEUtility.h"
+
 
 typedef enum _ResType {
 	RES_1x1, RES_1x5, RES_2x5, RES_5x10, RES_FONT

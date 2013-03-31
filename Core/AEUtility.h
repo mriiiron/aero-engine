@@ -1,11 +1,11 @@
-/*******************************************************************
-== File Info ==
-Name:				util.h
-Author:				CaiyZ (Mr.IroN)
-
-== File Comment ==
-This file contains items that are commonly used in other files.
-*******************************************************************/
+/**
+ * @file	AEUtility.h
+ * @brief	Containing items that are commonly used in other files.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
 
 #pragma once
 

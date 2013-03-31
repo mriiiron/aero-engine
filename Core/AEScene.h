@@ -1,3 +1,18 @@
+/**
+ * @file	AEScene.h
+ * @brief	Defining the game scenes.
+ *
+ * The scenes are almost the most important components in a game created using AEro Engine.
+ * Each scene could own its own background, sprite table and HUD. Meanwhile different scenes
+ * can react differently to the same input. For example, when you click somewhere in an "menu"
+ * scene, a menu item might be selected; but if you click on your enemy in the "gameplay" scene,
+ * your hero would just start to shoot.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 #include "AEHud.h"

@@ -1,3 +1,16 @@
+/**
+ * @file	AEBackground.h
+ * @brief	Including the definitions all about game backgrounds.
+ *
+ * The backgrounds is included in Scenes. in AEro Engine, they are divided into several layers and several landforms.
+ * Surficial Sprites could stand on these landforms. Of cource they also can jump up and down among those landforms.
+ * The using of layers could implement animations, visual effects, etc. 
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 #include <string>

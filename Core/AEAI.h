@@ -1,3 +1,22 @@
+/**
+ * @file	AEAI.h
+ * @brief	Includes the definations of AI.
+ *
+ * The AI in AEro Engine is just like a "soul" to the sprite. Imagine that when a 
+ * sprite losts its AI, it would has no perception about its surroundings, thus
+ * it would just act as a walking dead.
+ *
+ * Q: What kinds of Sprite need an AI?
+ * A: Enemy fighters, automatic turrets, tracking missiles, etc.
+ *
+ * Q: For what AI is unnecessary?
+ * A: Bullets, energy balls, falling leaves, etc.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 class AEAI {

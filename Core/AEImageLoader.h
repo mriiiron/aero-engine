@@ -1,3 +1,14 @@
+/**
+ * @file	AEImageLoader.h
+ * @brief	Providing with methods for image loading.
+ *
+ * (requires FreeImage.lib)
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 

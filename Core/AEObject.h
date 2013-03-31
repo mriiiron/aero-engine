@@ -1,18 +1,11 @@
-/*******************************************************************
-== File Info ==
-Name:				AEObjects.h
-Author:				CaiyZ (Mr.IroN)
-
-== File Comment ==
-This file defines all static resources used in this engine, including
-how to load Objects from their "data.txt". 
-Objects are kept in the Object Table, and are referred by the Sprites.
-Every Sprite is the living example of one certain Object.
-Every object consists of several animations. an object can change
-its "action index" to transform into another animation. For example,
-when a player-controlled character inputs "Attack", it would change
-its animation from "Standing" to "Attacking".
-*******************************************************************/
+/**
+ * @file	AEObject.h
+ * @brief	Defining the basic Objects used in our games.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
 
 #pragma once
 

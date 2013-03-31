@@ -1,3 +1,12 @@
+/**
+ * @file	AEFont.h
+ * @brief	Defining the fonts, so that we can print texts on the screen.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 #include <string>

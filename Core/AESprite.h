@@ -1,14 +1,14 @@
-/*******************************************************************
-== File Info ==
-Name:				AESprite.h
-Author:				CaiyZ (Mr.IroN)
-
-== File Comment ==
-This file is the definition module for all dynamic objects in the
-scene. Sprites could be dynamically created and destroyed while
-the game is running.
-
-*******************************************************************/
+/**
+ * @file	AESprite.h
+ * @brief	Defining all "dynamic objects" in the scenes.
+ *
+ * Sprites could be dynamically created and destroyed while the game is running.
+ * A certain scene helds a sprite table to manage its sprites.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
 
 #pragma once
 

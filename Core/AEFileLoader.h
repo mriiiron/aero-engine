@@ -1,3 +1,12 @@
+/**
+ * @file	AEFileLoader.h
+ * @brief	Providing with methods for different kinds of file-loading.
+ *
+ * @author	CaiyZ (Mr.IroN)
+ * @version	0.1
+ * @date	2013
+*/
+
 #pragma once
 
 using namespace std;
