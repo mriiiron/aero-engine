@@ -1,0 +1,16 @@
+#resource
+0 1x1 600 250 res\aero.png
+1 5x10 80 70 res\enemy\gedama_0.png
+101 1x1 53 9 res\common\shadow.png
+#resource_end
+
+#font
+Courier_New 10 16 res\common\font\Courier_New.png
+#font_end
+
+#bg
+res\common\bg\sample\bg.txt
+#bg_end
+
+#ptcl
+#ptcl_end

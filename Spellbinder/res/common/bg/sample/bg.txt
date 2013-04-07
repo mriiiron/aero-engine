@@ -1,0 +1,22 @@
+% Head info
+
+#name Sample_BG
+#layercount 1
+#landform res\common\bg\sample\landform.png
+
+
+% Resources
+
+#resources
+0 1x1 1200 540 res\common\bg\sample\landform.png
+#endresources
+
+
+% Layer animation definitions
+
+
+% Layers definition
+
+#layer 1200 540 depth: 0 end:
+#res 0
+#endlayer
