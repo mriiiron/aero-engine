@@ -27,13 +27,14 @@ public:
 	AEScene();
 	GLvoid addBackground(AEBackground* _bg, GLfloat x, GLfloat y) { bg = _bg;  bg->setLocation(x, y); }
 	GLvoid addSpriteTable(AESpriteTable* _sTable) { sTable = _sTable; }
+	GLvoid addSprite(AESprite* _sp);
 	GLvoid addHUD(AEHeadUpDisplay* _hud) { hud = _hud; }
 	AEBackground* getBackground() { return bg; }
 	AESpriteTable* getSpriteTable() { return sTable; }
 	AEHeadUpDisplay* getHUD() { return hud; }
-	GLvoid update();
-	GLvoid paint();
 
+	virtual GLvoid update();
+	virtual GLvoid paint();
 	virtual GLvoid keyDown(GLubyte key, int x, int y) = 0;
 
 protected:
@@ -56,7 +57,7 @@ public:
 	GLvoid addSceneAt(GLint index, AEScene* scene);
 	GLvoid stopAll();
 	GLvoid runScene(GLint index);
-	AEScene* getActiveScene() { return table[activeSceneIndex]; }
+	AEScene* getActiveScene() { if (activeSceneIndex >= 0) return table[activeSceneIndex]; else return NULL; }
 
 private:
 

@@ -12,9 +12,9 @@ extern AEAITable aiTable;
 GLvoid TDMainScene::init() {
 	addBackground(bgLib.get(0), -600, -270);
 	AESpriteTable* sTable = new AESpriteTable();
-	TDTurret* turret_1 = new TDTurret(this, 2, AESprite::TEAM_1, 0, 170);
-	TDTurret* turret_2 = new TDTurret(this, 2, AESprite::TEAM_1, -40, -220);
-	TDTurret* turret_3 = new TDTurret(this, 2, AESprite::TEAM_1, -100, 150);
+	TDTurret* turret_1 = new TDTurret(this, 2, AESprite::TEAM_1, -180, -100);
+	TDTurret* turret_2 = new TDTurret(this, 2, AESprite::TEAM_1, -220, -20);
+	TDTurret* turret_3 = new TDTurret(this, 2, AESprite::TEAM_1, -195, 50);
 	TDTurretAI* ai_1 = new TDTurretAI(turret_1);
 	TDTurretAI* ai_2 = new TDTurretAI(turret_2);
 	TDTurretAI* ai_3 = new TDTurretAI(turret_3);

@@ -20,9 +20,9 @@
 
 #action 2 golden_injured 102
 #framecount 3 next 3
-1 10 1 40 10 4 end:
-1 11 1 40 10 4 end:
-1 12 1 40 10 4 end:
+1 10 1 40 10 6 end:
+1 11 1 40 10 6 end:
+1 12 1 40 10 18 end:
 #endaction
 
 #action 3 golden_fall 3
@@ -60,9 +60,9 @@
 
 #action 12 gray_injured 2
 #framecount 3 next 13
-1 15 1 40 10 4 end:
-1 16 1 40 10 4 end:
-1 17 1 40 10 12 end:
+1 15 1 40 10 6 end:
+1 16 1 40 10 6 end:
+1 17 1 40 10 18 end:
 #endaction
 
 #action 13 gray_fall 3

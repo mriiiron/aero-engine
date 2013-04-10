@@ -1,6 +1,7 @@
 #resource
 0 1x1 600 250 res\aero.png
 1 5x10 80 70 res\enemy\gedama_0.png
+2 4x5 80 80 res\caster\davis_0.png
 101 1x1 53 9 res\common\shadow.png
 #resource_end
 

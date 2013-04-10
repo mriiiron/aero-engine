@@ -13,7 +13,7 @@
 
 
 typedef enum _ResType {
-	RES_1x1, RES_1x5, RES_2x5, RES_5x10, RES_FONT
+	RES_1x1, RES_1x5, RES_2x5, RES_4x5, RES_5x10, RES_FONT
 } ResType;
 
 class AEResource {

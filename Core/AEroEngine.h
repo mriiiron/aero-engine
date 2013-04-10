@@ -2,6 +2,7 @@
 
 #include "AEImageLoader.h"
 #include "AEUtility.h"
+#include "AETable.h"
 #include "AESystemParam.h"
 #include "AEPhysics.h"
 

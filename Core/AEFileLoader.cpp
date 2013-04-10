@@ -67,6 +67,9 @@ GLvoid AEFileLoader::loadBackground(AEBackground* bg, string bgDataFileName) {
 					else if (item == "2x5") {
 						res->setType(RES_2x5);
 					}
+					else if (item == "4x5") {
+						res->setType(RES_4x5);
+					}
 					else if (item == "5x10") {
 						res->setType(RES_5x10);
 					}
@@ -213,6 +216,9 @@ GLvoid AEFileLoader::loadMainData(string dataFileName) {
 				else if (item == "2x5") {
 					res->setType(RES_2x5);
 				}
+				else if (item == "4x5") {
+					res->setType(RES_4x5);
+				}
 				else if (item == "5x10") {
 					res->setType(RES_5x10);
 				}
@@ -272,14 +278,15 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 	string line, item;
 	istringstream iss;
 	while (!fs.eof()) {
-		getline(fs, line);  iss.clear();  iss.str(line);
+		getline(fs, line);
 		if (line == "") {
 			continue;
 		}
 		switch (line.at(0)) {
 		case '%':
-			break;
+			continue;
 		case '#':
+			iss.clear();  iss.str(line);
 			iss >> item;
 			if (item == "#name") {
 				iss >> item;  obj->setName(item);
@@ -288,22 +295,25 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 				iss >> item;  obj->setType(stoi(item));
 			}
 			else if (item == "#action") {
-				AEAnimation* newAnim = new AEAnimation;
+				AEAnimation* newAnim;
 				iss >> item;  GLint animIndex = stoi(item);
-				iss >> item;  newAnim->setName(item);
-				iss >> item;  newAnim->setState(stoi(item));
-				getline(fs, line);  iss.clear();  iss.str(line);
+				iss >> item;  //newAnim->setName(item);
+				iss >> item;  GLint animState = stoi(item);
+				getline(fs, line);
+				iss.clear();  iss.str(line);
 				iss >> item;
 				if (item == "#framecount") {
-					iss >> item;  GLint count = stoi(item);
+					iss >> item;  GLint frameCount = stoi(item);
+					newAnim = new AEAnimation(frameCount);
+					newAnim->setState(animState);
 					iss >> item;
-					GLint loop = 0;
 					if (item == "loop") {		
-						loop = 1;
+						newAnim->setLoop(GL_TRUE);
 						iss >> item;  GLint ttl = stoi(item);
 						newAnim->setTTL(ttl);
 						if (ttl != -1) {
-							getline(fs, line);  iss.clear();  iss.str(line);
+							getline(fs, line);
+							iss.clear();  iss.str(line);
 							iss >> item;
 							if (item == "#loopover") {
 								iss >> item;  newAnim->setNext(stoi(item));
@@ -317,21 +327,21 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 						}
 					}
 					else if (item == "next") {
-						loop = 0;
+						newAnim->setLoop(GL_FALSE);
 						iss >> item;
 						newAnim->setNext(stoi(item));
 					}
 					else {
 						// Error
 					}
-					newAnim->init(count, loop);
 				}
 				else {
 					// Error
 				}
-				getline(fs, line);  iss.clear();  iss.str(line);
 				GLint frameNum = 0, endTime = 0;
+				getline(fs, line);
 				while (line != "#endaction") {
+					iss.clear();  iss.str(line);
 					iss >> item;
 					if (item == "#repeat") {
 						iss >> item;  GLint rptTimes = stoi(item);
@@ -340,7 +350,7 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 							newAnim->cloneFrame(srcIndex, srcIndex + i);
 						}
 						frameNum += (rptTimes - 1);
-						getline(fs, line);  iss.clear();  iss.str(line);
+						getline(fs, line);
 						continue;
 					}
 					GLint rid = stoi(item);
@@ -352,101 +362,30 @@ GLvoid AEFileLoader::loadObject(AEObject* obj, string objectName) {
 					newAnim->setFrameCenter(frameNum, centerx, centery);
 					iss >> item;  endTime += stoi(item);
 					newAnim->setEndTime(frameNum, endTime);
-					newAnim->setShiftx(frameNum, 0);  newAnim->setShifty(frameNum, 0);
-					newAnim->setDvx(frameNum, 0);  newAnim->setDvy(frameNum, 0);
-					newAnim->setRotate(frameNum, 0);
+					GLint shiftx = 0, shifty = 0, dvx = 0, dvy = 0;
 					iss >> item;
 					while (item != "end:") {
 						if (item == "shiftx:") {
-							iss >> item;  newAnim->setShiftx(frameNum, stoi(item));
+							iss >> item;  shiftx = stoi(item);
 						}
 						else if (item == "shifty:") {
-							iss >> item;  newAnim->setShifty(frameNum, stoi(item));
+							iss >> item;  shifty = stoi(item);
 						}
 						else if (item == "dvx:") {
-							iss >> item;  newAnim->setDvx(frameNum, stoi(item));
+							iss >> item;  dvx = stoi(item);
 						}
 						else if (item == "dvy:") {
-							iss >> item;  newAnim->setDvy(frameNum, stoi(item));
-						}
-						else if (item == "rotate:") {
-							iss >> item;  newAnim->setRotate(frameNum, stoi(item));
+							iss >> item;  dvy = stoi(item);
 						}
 						// else if ..
 						iss >> item;
 					}
-					getline(fs, line);  iss.clear();  iss.str(line);
+					newAnim->setShift(frameNum, shiftx, shifty);
+					newAnim->setDv(frameNum, dvx, dvy);
+					getline(fs, line);
 					while (line.at(0) == '$') {
-						iss >> item;
-						if (item == "$cast") {
-							GLint oid, action, castx, casty;
-							iss >> item;  oid = stoi(item);
-							iss >> item;  action = stoi(item);
-							iss >> item;  castx = stoi(item);
-							iss >> item;  casty = stoi(item);
-							newAnim->setCast(frameNum, oid, action, castx, casty);
-						}
-						else if (item == "$attack") {
-							GLint atkType, blockedTo, blownOffTo, damage, x1, y1, x2, y2, effect = 0, angle = 0, force = 0;
-							iss >> item;  atkType = stoi(item);
-							iss >> item;  blockedTo = stoi(item);
-							iss >> item;  blownOffTo = stoi(item);
-							iss >> item;  damage = stoi(item);
-							iss >> item;  x1 = stoi(item);
-							iss >> item;  y1 = stoi(item);
-							iss >> item;  x2 = stoi(item);
-							iss >> item;  y2 = stoi(item);
-							iss >> item;
-							while (item != "end:") {
-								if (item == "effect:") {
-									iss >> item;  effect = stoi(item);
-								}
-								else if (item == "angle:") {
-									iss >> item;  angle = stoi(item);
-								}
-								else if (item == "force:") {
-									iss >> item;  force = stoi(item);
-								}
-								// else if ..
-								iss >> item;
-							}
-							newAnim->setAttack(frameNum, atkType, blockedTo, blownOffTo, damage, force, x1, y1, x2, y2, effect, angle);
-						}
-						else if (item == "$body") {
-							GLint bdyType, x1, y1, x2, y2;
-							iss >> item;  bdyType = stoi(item);
-							iss >> item;  x1 = stoi(item);
-							iss >> item;  y1 = stoi(item);
-							iss >> item;  x2 = stoi(item);
-							iss >> item;  y2 = stoi(item);
-							newAnim->setBody(frameNum, bdyType, x1, y1, x2, y2);
-						}
-						else if (item == "$block") {
-							GLint blockType, blockTo, breakTo;
-							iss >> item;  blockType = stoi(item);
-							iss >> item;  blockTo = stoi(item);
-							iss >> item;  breakTo = stoi(item);
-							newAnim->setBlock(frameNum, blockType, blockTo, breakTo);
-						}
-						else if (item == "$hold") {
-							iss >> item;
-							newAnim->setHoldKey(frameNum, AEObject::keyStrToByte(item));
-						}
-						else if (item == "$jumpto") {
-							GLbyte input;  GLint action;
-							iss >> item;  action = stoi(item);
-							iss >> item;  input = AEObject::keyStrToInputCode(item);
-							newAnim->setJump(frameNum, action, input);
-						}
-						else if (item == "$keyrelease") {
-							GLbyte key;  GLint action;
-							iss >> item;  action = stoi(item);
-							iss >> item;
-							key = AEObject::keyStrToByte(item);
-							newAnim->setKeyRelease(frameNum, key, action);
-						}
-						// Else if ..
-						getline(fs, line);  iss.clear();  iss.str(line);
+						newAnim->getFrame(frameNum)->addOptionalByStrAt(line);
+						getline(fs, line);
 					}
 					frameNum++;
 				}
@@ -474,6 +413,8 @@ GLvoid AEFileLoader::loadObjectTable(string dataFileName) {
 	cout << "*** LOADING OBJECTS .. ***\n" << endl;
 	while (!fs.eof()) {
 		getline(fs, line);  iss.clear();  iss.str(line);
+		if (line == "")
+			continue;
 		AEObject* obj = new AEObject();
 		iss >> item;  GLint oid = stoi(item);  obj->setOid(oid);
 		iss >> item;

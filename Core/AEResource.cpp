@@ -25,6 +25,12 @@ AERect AEResource::getTexCoords(GLint imgOffset, GLint imgCells) {
 		rect.y2 = 1.0 - 0.5 * (imgOffset / 5);
 		rect.y1 = rect.y2 - 0.5;
 		break;
+	case RES_4x5:
+		rect.x1 = 0.2 * (imgOffset % 5);
+		rect.x2 = rect.x1 + 0.2 * imgCells;
+		rect.y2 = 1.0 - 0.25 * (imgOffset / 5);
+		rect.y1 = rect.y2 - 0.25;
+		break;
 	case RES_5x10:
 		rect.x1 = 0.1 * (imgOffset % 10);
 		rect.x2 = rect.x1 + 0.1 * imgCells;

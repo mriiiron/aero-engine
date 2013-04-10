@@ -25,12 +25,15 @@ class SPMainScene: public AEScene {
 
 public:
 
+	GLvoid init();
+	AEHashedTable<SPSpell, 200>* getSpellTable() { return spellTable; }
+
 	GLvoid update();
 	GLvoid paint();
 	GLvoid keyDown(GLubyte key, int x, int y);
 
 private:
 
-	AEHashedTable<SPSpell, 200> spellTable;
+	AEHashedTable<SPSpell, 200>* spellTable;
 
 };

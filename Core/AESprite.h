@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include "AEKeyboard.h"
 #include "AEObject.h"
 
 using namespace std;
@@ -38,7 +39,7 @@ public:
 	GLvoid setState(GLint _state) { state = _state; }
 	GLvoid setAx(GLfloat _ax) { ax = _ax; }
 	GLvoid setAy(GLfloat _ay) { ay = _ay; }
-	GLvoid setVx(GLfloat _vx) { vy = _vx; }
+	GLvoid setVx(GLfloat _vx) { vx = _vx; }
 	GLvoid setVy(GLfloat _vy) { vy = _vy; }
 	GLvoid setVAngle(GLfloat _vangle) { vangle = _vangle; }
 	GLvoid setGroundSpeed(GLfloat _speed) { gndSpeed = _speed; }
@@ -74,8 +75,8 @@ public:
 	AEVector2 getFaceVector();
 	GLbyte inputStateJudge(GLint _input);
 	GLint log2(GLint key);
-	AEPoint calcRotatedPoint(GLfloat cx, GLfloat cy, Frame* f, GLfloat angle, GLbyte facing);
-	AEBiasRect calcRotatedRect(GLfloat cx, GLfloat cy, Frame* f, GLfloat angle, GLbyte facing);
+	AEPoint calcRotatedPoint(AEPoint point, GLfloat cx, GLfloat cy, AEFrame* f, GLfloat angle, GLbyte facing);
+	AEBiasRect calcRotatedRect(GLfloat cx, GLfloat cy, AEFrame* f, GLfloat angle, GLbyte facing);
 	/* CHARACTER ONLY */
 	GLint getKeyState() { return keyState; }
 	GLint getHP() { return hpValue; }

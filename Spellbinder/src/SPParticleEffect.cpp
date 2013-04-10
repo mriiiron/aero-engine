@@ -6,22 +6,24 @@ extern AEParticleSystem ptclSys;
 
 GLvoid SPElectricParticle::init() {
 	cx = matrixEmit->getX();  cy = matrixEmit->getY();  cz = 0.0f;
-	life = 1.0f;  fade = 0.08f;
-	GLfloat _v = GLfloat(AEUtil::randomIntBetween(15, 20));
-	GLfloat _thetaDeg = AEUtil::randomIntBetween(-45, 45);
-	GLfloat _gammaDeg = AEUtil::randomIntBetween(-25, 25);
-	if (_gammaDeg < 0) {
-		_thetaDeg += 180;
-		_gammaDeg = - _gammaDeg;
-	}
+	life = 1.0f;
+	//GLfloat _v = GLfloat(AEUtil::randomIntBetween(15, 20));
+	//GLfloat _thetaDeg = AEUtil::randomIntBetween(-45, 45);
+	//GLfloat _gammaDeg = AEUtil::randomIntBetween(-25, 25);
+	//if (_gammaDeg < 0) {
+	//	_thetaDeg += 180;
+	//	_gammaDeg = - _gammaDeg;
+	//}
+	GLfloat _v = GLfloat(AEUtil::randomIntBetween(5, 20));
+	GLfloat _thetaDeg = AEUtil::randomIntBetween(-180, 180);
 	GLfloat _theta = AEUtil::deg2rad(_thetaDeg);
-	GLfloat _gamma = AEUtil::deg2rad(_gammaDeg);
-	vx = _v * cos(_theta) * cos(_gamma);
-	vy = _v * sin(_gamma);
-	vz = _v * sin(_theta) * cos(_gamma);
+	vx = _v * cos(_theta);
+	vy = _v * sin(_theta);
+	vz = 0.0f;
 	ax = ay = az = 0.0f;
 	r = g = b = 1.0f;
-	damping = 1.2f;
+	damping = AEUtil::randomIntBetween(1200, 1500) / 1000.0f;
+	fade = AEUtil::randomIntBetween(60, 100) / 1000.0f;
 	angle = vrotate = 0.0f;
 }
 

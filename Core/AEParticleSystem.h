@@ -11,7 +11,6 @@
 
 #define NULL						0
 
-#define MAX_EMITTER_PARTICLES		200
 #define MAX_ONLINE_GENERATORS		1000
 #define MAX_PARTICLE_TYPES			50
 
@@ -22,6 +21,7 @@
 #define EMIT_MODE_ERUPT				0
 #define EMIT_MODE_GRADUALLY			1
 
+#define PAINT_METHOD_UNTEXTURED		-1
 #define PAINT_METHOD_TEXTURE		0
 #define PAINT_METHOD_QUADRANGLE		1
 #define PAINT_METHOD_HEXAGON		2
@@ -36,11 +36,6 @@ class AEParticle {
 public:
 
 	AEParticle();
-	GLvoid update();
-	GLvoid paint(GLint method = PAINT_METHOD_QUADRANGLE);
-	GLvoid init();
-	GLvoid reset();
-	GLvoid split();
 	GLint isEnabled() { return enabled; }
 	GLvoid setMatrixEmitter(AEParticleEmitter* _matrixEmit) { matrixEmit = _matrixEmit; }
 	GLvoid setAttachEmitter(AEParticleEmitter* _attachEmit) { attachEmit = _attachEmit; }
@@ -57,7 +52,12 @@ public:
 	GLvoid setRGB(GLfloat _r, GLfloat _g, GLfloat _b) { r = _r;  g = _g;  b = _b; }
 	GLvoid setLife(GLfloat _life) { life = _life; }
 
-private:
+	virtual GLvoid init() = 0;
+	virtual GLvoid update() = 0;
+	virtual GLvoid paint() = 0;
+	virtual GLvoid reset() = 0;
+
+protected:
 
 	GLint enabled;
 	AEParticleEmitter* matrixEmit;
@@ -75,24 +75,24 @@ class AEParticleEmitter {
 
 public:
 
-	AEParticleEmitter(GLint _type, GLint _mode, GLfloat _x, GLfloat _y, GLfloat _z = 0.0, GLint _count = 1, GLint _life = 100);
-	GLvoid update();
-	GLvoid paint();
+	static const GLint MAX_PARTICLES		= 1000;
+
+	AEParticleEmitter(GLfloat _x, GLfloat _y, GLfloat _z = 0.0, GLint _count = 1, GLint _life = 100);
 	GLvoid setPosition(GLfloat _x, GLfloat _y, GLfloat _z = 0.0) { x = _x;  y = _y;  z = _z; }
 	GLvoid setIndex(GLint _index) { index = _index; }
-	GLvoid setLife(GLint _life) { life = _life; }
 	GLvoid resetTime() { time = 0; }
 	GLfloat getX() { return x; }
 	GLfloat getY() { return y; }
-	GLint getType() { return type; }
-	GLint getMode() { return mode; }
+	GLfloat getZ() { return z; }
 	GLint getCount() { return count; }
 
-private:
+	virtual GLvoid update() = 0;
+	virtual GLvoid paint();
+
+protected:
 
 	GLint index;
-	AEParticle group[MAX_EMITTER_PARTICLES];
-	GLint type, mode;
+	AEParticle* group[MAX_PARTICLES];
 	GLint count;
 	GLfloat x, y, z;
 	GLint time, life;

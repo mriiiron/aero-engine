@@ -62,8 +62,8 @@ GLvoid SPEnemy::update() {
 	}
 	time++;
 	if (time >= anim->getEndTime(frame)) {
-		cx += (fac * anim->getFrame(frame).shiftx);
-		cy += anim->getFrame(frame).shifty;
+		cx += (fac * anim->getFrame(frame)->getShiftx());
+		cy += anim->getFrame(frame)->getShiftx();
 		frame++;
 		if (time >= anim->getEndTime(anim->getFrameCount() - 1)) {
 			time = 0;
@@ -75,8 +75,8 @@ GLvoid SPEnemy::update() {
 				return;
 			}
 		}
-		GLint dvx = anim->getFrame(frame).dvx;
-		GLint dvy = anim->getFrame(frame).dvy;
+		GLint dvx = anim->getFrame(frame)->getDvx();
+		GLint dvy = anim->getFrame(frame)->getDvy();
 		if (drop > 0) {
 			gndSpeed = (dvx == 999 ? 0.0f : gndSpeed + dvx);
 		}

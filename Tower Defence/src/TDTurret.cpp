@@ -1,14 +1,27 @@
 #include <GL\glut.h>
+#include <sstream>
 #include "AEroEngine.h"
 #include "TDTurret.h"
 
 extern AEObjectTable oTable;
 
+GLvoid AEFrame::addOptionalByStrAt(string line) {
+	istringstream iss;
+	string item;
+	iss.clear();  iss.str(line);
+	iss >> item;
+	if (item == "$shoot") {
+		iss >> item;  GLint damage = stoi(item);
+		optionalParam[TDShootParam::slotIndex] = new TDShootParam(damage);
+	}
+	// else if ..
+}
+
 TDTurret::TDTurret(AEScene* _scene, GLint _oid, GLint _team, GLfloat _cx, GLfloat _cy, GLint _action, GLint inverse): AESprite(_scene, _oid, _team, _cx, _cy, _action, inverse) {
 	target = NULL;
 }
 
-GLvoid TDTurret::aimAccuratelytAt(GLfloat x, GLfloat y) {
+GLvoid TDTurret::aimAccuratelyAt(GLfloat x, GLfloat y) {
 	if (x == cx) {
 		if (y > cy) {
 			angle = AEUtil::deg2rad(90.0);
@@ -59,8 +72,8 @@ GLvoid TDTurret::update() {
 	if (angle > 3.14159265f) angle -= 2 * 3.14159265f;
 	time++;
 	if (time >= anim->getEndTime(frame)) {
-		cx += (fac * anim->getFrame(frame).shiftx);
-		cy += anim->getFrame(frame).shifty;
+		cx += (fac * anim->getFrame(frame)->getShiftx());
+		cy += anim->getFrame(frame)->getShifty();
 		frame++;
 		if (time >= anim->getEndTime(anim->getFrameCount() - 1)) {
 			time = 0;
@@ -73,8 +86,9 @@ GLvoid TDTurret::update() {
 			}
 		}
 		// ¹¶ÇÒ
-		if (anim->getFrame(frame).attack != NULL) {
-			target->takeDamage(anim->getFrame(frame).attack->damage);
+		TDShootParam* shoot = (TDShootParam*)(anim->getFrame(frame)->getOptional(TDShootParam::slotIndex));
+		if (shoot != NULL) {
+			target->takeDamage(shoot->getDamage());
 			AEPoint selfC = getCenter(), targetC = target->getCenter();
 			AEVector2 aim = AEVector2::normalize(getFaceVector());
 			GLfloat dist = AEUtil::calcDistance(selfC, targetC) - 20.0f;

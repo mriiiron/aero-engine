@@ -1,10 +1,12 @@
 #include <GL\glut.h>
 #include "AESystemParam.h"
 #include "AEUtility.h"
+#include "AEParticleSystem.h"
 #include "AECamera.h"
 #include "AEKeyboard.h"
 #include "AEScene.h"
 
+extern AEParticleSystem ptclSys;
 extern AECamera camera;
 
 AEScene::AEScene() {
@@ -13,14 +15,22 @@ AEScene::AEScene() {
 	hud = NULL;
 }
 
+GLvoid AEScene::addSprite(AESprite* _sp) {
+	if (sTable == NULL) {
+		AEUtil::consoleMessage("Warning: Trying to add sprite to a scene without sprite table.");
+		return;
+	}
+	sTable->add(_sp);
+}
+
 GLvoid AEScene::update() {
-	// ptclSys.update();
 	if (bg != NULL) {
 		bg->update();
 	}
 	if (sTable != NULL) {
 		sTable->update();
 	}
+	ptclSys.update();
 	if (hud != NULL) {
 		hud->update();
 	}
@@ -34,6 +44,7 @@ GLvoid AEScene::paint() {
 	if (sTable != NULL) {
 		sTable->paint();
 	}
+	ptclSys.paint();
 	if (hud != NULL) {
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();

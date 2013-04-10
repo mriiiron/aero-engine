@@ -22,8 +22,4 @@ public:
 	static GLvoid loadObject(AEObject* obj, string objectName);
 	static GLvoid loadObjectTable(string dataFileName);
 
-private:
-
-
-
 };

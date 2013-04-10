@@ -1,1 +1,2 @@
+0 caster
 1 enemy

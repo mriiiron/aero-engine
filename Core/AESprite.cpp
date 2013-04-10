@@ -7,7 +7,6 @@
 #include "AEUtility.h"
 #include "AEPhysics.h"
 #include "AEResource.h"
-#include "AEKeyboard.h"
 #include "AEBackground.h"
 #include "AEScene.h"
 #include "AESprite.h"
@@ -43,42 +42,44 @@ AEVector2 AESprite::getFaceVector() {
 	}
 }
 
-AEPoint AESprite::calcRotatedPoint(GLfloat cx, GLfloat cy, Frame* f, GLfloat angle, GLbyte facing) {
+AEPoint AESprite::calcRotatedPoint(AEPoint point, GLfloat cx, GLfloat cy, AEFrame* f, GLfloat angle, GLbyte facing) {
 	GLfloat cosA = cos(angle), sinA = sin(angle);
-	AEPoint point;
+	AEPoint rotated;
 	if (facing == FACING_RIGHT) {
-		point.x = cx + (f->cast->x - f->centerx) * cosA - (f->cast->y - f->centery) * sinA;
-		point.y = cy + (f->cast->x - f->centerx) * sinA + (f->cast->y - f->centery) * cosA;
+		rotated.x = cx + (point.x - f->getCenterx()) * cosA - (point.y - f->getCentery()) * sinA;
+		rotated.y = cy + (point.x - f->getCenterx()) * sinA + (point.y - f->getCentery()) * cosA;
 	}
 	else {
-		point.x = cx - (f->cast->x - f->centerx) * cosA + (f->cast->y - f->centery) * sinA;
-		point.y = cy + (f->cast->x - f->centerx) * sinA + (f->cast->y - f->centery) * cosA;
+		rotated.x = cx - (point.x - f->getCenterx()) * cosA + (point.y - f->getCentery()) * sinA;
+		rotated.y = cy + (point.x - f->getCenterx()) * sinA + (point.y - f->getCentery()) * cosA;
 	}
-	return point;
+	return rotated;
 }
 
-AEBiasRect AESprite::calcRotatedRect(GLfloat cx, GLfloat cy, Frame* f, GLfloat angle, GLbyte facing) {
+AEBiasRect AESprite::calcRotatedRect(GLfloat cx, GLfloat cy, AEFrame* f, GLfloat angle, GLbyte facing) {
 	GLfloat cosA = cos(angle), sinA = sin(angle);
 	AEBiasRect bRect;
+	GLint centerx = f->getCenterx(), centery = f->getCentery();
+	GLint width = f->getWidth(), height = f->getHeight();
 	if (facing == FACING_RIGHT) {
-		bRect.x1 = cx - f->centerx * cosA + f->centery * sinA;
-		bRect.y1 = cy - f->centerx * sinA - f->centery * cosA;
-		bRect.x2 = bRect.x1 + f->width * cosA;
-		bRect.y2 = bRect.y1 + f->width * sinA;
-		bRect.x3 = bRect.x2 - f->height * sinA;
-		bRect.y3 = bRect.y2 + f->height * cosA;
-		bRect.x4 = bRect.x1 - f->height * sinA;
-		bRect.y4 = bRect.y1 + f->height * cosA;
+		bRect.x1 = cx - centerx * cosA + centery * sinA;
+		bRect.y1 = cy - centerx * sinA - centery * cosA;
+		bRect.x2 = bRect.x1 + width * cosA;
+		bRect.y2 = bRect.y1 + width * sinA;
+		bRect.x3 = bRect.x2 - height * sinA;
+		bRect.y3 = bRect.y2 + height * cosA;
+		bRect.x4 = bRect.x1 - height * sinA;
+		bRect.y4 = bRect.y1 + height * cosA;
 	}
 	else {
-		bRect.x2 = cx + f->centerx * cosA - f->centery * sinA;
-		bRect.y2 = cy - f->centerx * sinA - f->centery * cosA;
-		bRect.x1 = bRect.x2 - f->width * cosA;
-		bRect.y1 = bRect.y2 + f->width * sinA;
-		bRect.x3 = bRect.x2 + f->height * sinA;
-		bRect.y3 = bRect.y2 + f->height * cosA;
-		bRect.x4 = bRect.x1 + f->height * sinA;
-		bRect.y4 = bRect.y1 + f->height * cosA;
+		bRect.x2 = cx + centerx * cosA - centery * sinA;
+		bRect.y2 = cy - centerx * sinA - centery * cosA;
+		bRect.x1 = bRect.x2 - width * cosA;
+		bRect.y1 = bRect.y2 + width * sinA;
+		bRect.x3 = bRect.x2 + height * sinA;
+		bRect.y3 = bRect.y2 + height * cosA;
+		bRect.x4 = bRect.x1 + height * sinA;
+		bRect.y4 = bRect.y1 + height * cosA;
 	}
 	return bRect;
 }
@@ -98,12 +99,12 @@ GLvoid AESprite::changeAction(GLint _action) {
 	timeToLive = anim->getTTL();
 	frame = time = 0;
 	if (state >= AEObject::STATE_CHAR_ACTION) {
-		GLint dvx = anim->getFrame(frame).dvx;
+		GLint dvx = anim->getFrame(frame)->getDvx();
 		if (dvx == 999)
 			vx = 0;
 		else
 			vx += dvx;
-		GLint dvy = anim->getFrame(frame).dvy;
+		GLint dvy = anim->getFrame(frame)->getDvy();
 		if (dvy == 999)
 			vy = 0;
 		else
@@ -112,14 +113,14 @@ GLvoid AESprite::changeAction(GLint _action) {
 	else { 
 		ax = vx = ay = vy = 0.0;
 	}
-	if (anim->getFrame(frame).cast != NULL) {
-		Frame f = anim->getFrame(frame);
-		AEPoint castPoint = calcRotatedPoint(cx, cy, &f, angle, facing);
-		if (facing == 0)
-			scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
-		else
-			scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
-	}
+	//if (anim->getFrame(frame).cast != NULL) {
+	//	AEFrame* f = anim->getFrame(frame);
+	//	AEPoint castPoint = calcRotatedPoint(cx, cy, &f, angle, facing);
+	//	if (facing == 0)
+	//		scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action));
+	//	else
+	//		scene->getSpriteTable()->add(new AESprite(scene, f.cast->oid, team, castPoint.x, castPoint.y, f.cast->action, CAST_INVERSE));
+	//}
 }
 
 GLint AESprite::log2(GLint key) {
@@ -332,8 +333,8 @@ GLvoid AESprite::update() {
 	if (angle > 3.14159265f) angle -= 2 * 3.14159265f;
 	time++;
 	if (time >= anim->getEndTime(frame)) {
-		cx += (fac * anim->getFrame(frame).shiftx);
-		cy += anim->getFrame(frame).shifty;
+		cx += (fac * anim->getFrame(frame)->getShiftx());
+		cy += anim->getFrame(frame)->getShifty();
 		frame++;
 		if (time >= anim->getEndTime(anim->getFrameCount() - 1)) {
 			time = 0;
@@ -555,10 +556,10 @@ GLvoid AESprite::paint() {
 	AEObject* obj = oTable.get(oid);
 	if (obj->getType() < 1)
 		paintShadow();
-	Frame f = obj->getAnim(action)->getFrame(frame);
-	AEResource* res = rTable.get(f.rid);
-	AERect texClip = res->getTexCoords(f.imgOffset, f.imgCells);
-	AEBiasRect sprRect = calcRotatedRect(cx, cy, &f, angle, facing);
+	AEFrame* f = obj->getAnim(action)->getFrame(frame);
+	AEResource* res = f->getResource();
+	AERect texClip = res->getTexCoords(f->getImgOffset(), f->getImgCells());
+	AEBiasRect sprRect = calcRotatedRect(cx, cy, f, angle, facing);
 	if (facing == FACING_RIGHT)
 		AEUtil::paintRect(res->getTexture(), texClip, sprRect);
 	else
@@ -636,36 +637,36 @@ GLvoid AESpriteTable::clear() {
 }
 
 GLvoid AESpriteTable::handleCollisions() {
-	for (GLint i = 0; i < pHash - 1; i++) {
-		AESprite* s1 = table[hash[i]];
-		Frame f1 = oTable.get(s1->getOid())->getAnim(s1->getAction())->getFrame(s1->getFrame());
-		if (!(s1->isAtkJudgeLocked()) && f1.attack != NULL) {
-			for (GLint j = i + 1; j < pHash; j++) {
-				AESprite* s2 = table[hash[j]];
-				if (s1->getTeam() == s2->getTeam())
-					continue;
-				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction())->getFrame(s2->getFrame());
-				if (f2.body != NULL) {
-					AECollisionResult cr = AECollision::check(s1, s2, &f1, &f2);
-					if (cr.type != AECollisionResult::TYPE_NONE)
-						AECollision::handle(s1, s2, &f1, &f2, cr.point);
-				}
-			}
-		}
-		if (f1.body != NULL) {
-			for (GLint j = i + 1; j < pHash; j++) {
-				AESprite* s2 = table[hash[j]];
-				if (s2->isAtkJudgeLocked() || s1->getTeam() == s2->getTeam())
-					continue;
-				Frame f2 = oTable.get(s2->getOid())->getAnim(s2->getAction())->getFrame(s2->getFrame());
-				if (f2.attack != NULL) {
-					AECollisionResult cr = AECollision::check(s2, s1, &f2, &f1);
-					if (cr.type != AECollisionResult::TYPE_NONE)
-						AECollision::handle(s2, s1, &f2, &f1, cr.point);
-				}
-			}
-		}
-	}
+	//for (GLint i = 0; i < pHash - 1; i++) {
+	//	AESprite* s1 = table[hash[i]];
+	//	AEFrame* f1 = oTable.get(s1->getOid())->getAnim(s1->getAction())->getFrame(s1->getFrame());
+	//	if (!(s1->isAtkJudgeLocked()) && f1.attack != NULL) {
+	//		for (GLint j = i + 1; j < pHash; j++) {
+	//			AESprite* s2 = table[hash[j]];
+	//			if (s1->getTeam() == s2->getTeam())
+	//				continue;
+	//			AEFrame* f2 = oTable.get(s2->getOid())->getAnim(s2->getAction())->getFrame(s2->getFrame());
+	//			if (f2.body != NULL) {
+	//				AECollisionResult cr = AECollision::check(s1, s2, &f1, &f2);
+	//				if (cr.type != AECollisionResult::TYPE_NONE)
+	//					AECollision::handle(s1, s2, &f1, &f2, cr.point);
+	//			}
+	//		}
+	//	}
+	//	if (f1.body != NULL) {
+	//		for (GLint j = i + 1; j < pHash; j++) {
+	//			AESprite* s2 = table[hash[j]];
+	//			if (s2->isAtkJudgeLocked() || s1->getTeam() == s2->getTeam())
+	//				continue;
+	//			AEFrame* f2 = oTable.get(s2->getOid())->getAnim(s2->getAction())->getFrame(s2->getFrame());
+	//			if (f2.attack != NULL) {
+	//				AECollisionResult cr = AECollision::check(s2, s1, &f2, &f1);
+	//				if (cr.type != AECollisionResult::TYPE_NONE)
+	//					AECollision::handle(s2, s1, &f2, &f1, cr.point);
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 GLvoid AESpriteTable::update() {

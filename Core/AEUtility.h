@@ -11,6 +11,10 @@
 
 #include <stdlib.h>
 #include <cmath>
+#include <string>
+#include <iostream>
+
+using namespace std;
 
 #define NULL								0
 
@@ -54,11 +58,14 @@ public:
 	static const GLint INVERSE_X				= 0;
 	static const GLint INVERSE_Y				= 1;
 
+	static GLvoid consoleMessage(string msg) { cout << msg << endl; }
+
 	static GLfloat deg2rad(GLfloat deg) { return deg / 180.0f * 3.14159f; }
 	static GLfloat rad2deg(GLfloat rad) { return rad / 3.14159f * 180.0f; }
 
 	static GLfloat calcDistance(AEPoint p1, AEPoint p2) { return sqrtf((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y)); }
 	static GLint randomIntBetween(GLint start, GLint end) { return (rand() % (end - start + 1)) + start; }
+	static GLclampf randomClampf() { return rand() / double(RAND_MAX); }
 	static AEPoint createPoint(GLfloat _x, GLfloat _y) { AEPoint p;  p.x = _x;  p.y = _y;  return p; }
 	static AERect createRect(GLfloat _x1, GLfloat _y1, GLfloat _x2, GLfloat _y2) { AERect r;  r.x1 = _x1;  r.y1 = _y1;  r.x2 = _x2;  r.y2 = _y2;  return r; }
 	

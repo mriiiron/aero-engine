@@ -36,7 +36,7 @@ GLvoid TDTurretAI::execute() {
 		if (deg < 2.0f) {
 			// shoot
 			self->setVAngle(0.0f);
-			((TDTurret*)self)->aimAccuratelytAt(target->getCx(), target->getCy());
+			((TDTurret*)self)->aimAccuratelyAt(target->getCx(), target->getCy());
 			((TDTurret*)self)->openFire();
 		}
 		else {

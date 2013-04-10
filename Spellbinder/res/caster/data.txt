@@ -1,0 +1,50 @@
+% Head info
+
+#name Davis
+#type 0
+
+% Actions definition
+
+#action 0 idle 0
+#framecount 4 loop -1
+2 0 1 39 1 8 end:
+2 1 1 39 1 9 end:
+2 2 1 39 1 10 end:
+2 3 1 39 1 14 end:
+#endaction
+
+#action 1 move 3
+#framecount 4 loop -1
+2 5 1 39 1 4 end:
+2 6 1 39 1 4 end:
+2 7 1 39 1 4 end:
+2 8 1 39 1 4 end:
+#endaction
+
+#action 2 cast_a 1
+#framecount 5 next 0
+2 10 1 39 1 3 end:
+2 11 1 39 1 3 end:
+2 12 1 39 1 6 end:
+$cast 65 37
+2 11 1 39 1 3 end:
+2 10 1 39 1 3 end:
+#endaction
+
+#action 3 cast_b 1
+#framecount 5 next 0
+2 15 1 39 1 3 end:
+2 16 1 39 1 3 end:
+2 17 1 39 1 3 end:
+2 16 1 39 1 3 end:
+2 15 1 39 1 3 end:
+#endaction
+
+#action 4 cast_c 1
+#framecount 5 next 0
+2 15 1 39 1 3 end:
+2 16 1 39 1 3 end:
+2 18 1 39 1 3 end:
+2 16 1 39 1 3 end:
+2 15 1 39 1 3 end:
+#endaction

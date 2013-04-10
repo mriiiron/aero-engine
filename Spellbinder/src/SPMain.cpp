@@ -61,6 +61,7 @@ GLvoid createWorld() {
 	SPMainScene* mainScene = new SPMainScene();
 	mainScene->addBackground(bgLib.get(0), -600, -220);
 	mainScene->addSpriteTable(new AESpriteTable());
+	mainScene->init();
 	sceneManager.addSceneAt(1, mainScene);
 	sceneManager.runScene(1);
 }

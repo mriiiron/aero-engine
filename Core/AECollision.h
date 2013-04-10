@@ -35,9 +35,9 @@ public:
 	const static GLint HIT_LIGHT				= 2;
 	const static GLint HIT_CRITICAL				= 3;
 
-	static AECollisionResult check(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2);
-	static AECollisionResult ray(AESprite* s1, AESprite* s2, Frame* f1);
-	static GLvoid handle(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEPoint sparkPos);
+	static AECollisionResult check(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2) {}
+	static AECollisionResult ray(AESprite* s1, AESprite* s2, Frame* f1) {}
+	static GLvoid handle(AESprite* s1, AESprite* s2, Frame* f1, Frame* f2, AEPoint sparkPos) {}
 
 private:
 

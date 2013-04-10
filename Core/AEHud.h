@@ -23,7 +23,6 @@ typedef struct _HUDText {
 	AEFont* font;
 	string text;
 	GLint x, y;
-	GLclampf alpha;
 } HUDText;
 
 
@@ -31,7 +30,6 @@ typedef struct _HUDImage {
 	AEResource* res;
 	GLint imgOffset;
 	GLint x, y;
-	GLclampf alpha;
 } HUDImage;
 
 
